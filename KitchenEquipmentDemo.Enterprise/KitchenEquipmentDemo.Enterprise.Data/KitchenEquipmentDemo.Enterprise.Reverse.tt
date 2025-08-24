@@ -1,0 +1,249 @@
+﻿<#@ template language="C#" hostspecific="true" #>
+<#@ output extension=".cs" #>
+<#@ include file="$(ProjectDir)EF.Reverse.POCO.v3.ttinclude" #>
+<#@ assembly name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+
+<#
+    // ===== EF6 + .NET Framework + Your DB =====
+    Settings.DatabaseType     = DatabaseType.SqlServer;
+    Settings.TemplateType     = TemplateType.Ef6;
+    Settings.GeneratorType    = GeneratorType.Ef6;
+
+    // Use EfCore file manager ONLY to enable sub-folders
+    Settings.GenerateSeparateFiles = true;
+    Settings.FileManagerType       = FileManagerType.EfCore;
+
+    // ---- Connection ----
+    Settings.ConnectionString =
+        "Data Source=LAPTOP-DPSGGNRS\\MSSQLSERVER2022;Initial Catalog=KitchenEquipmentDemo.Enterprise;" +
+        "User ID=KitchenEnterpriseLogin;Password=Ent3rpr1seP@ss!;TrustServerCertificate=true;MultipleActiveResultSets=true";
+
+    Settings.ConnectionStringName = "AppDb";
+    Settings.DbContextName        = "AppDbContext";
+
+    // Namespaces
+    Settings.Namespace                  = "KitchenEquipmentDemo.Enterprise.Data";
+    Settings.ContextNamespace           = Settings.Namespace + ".Context";
+    Settings.PocoNamespace              = Settings.Namespace + ".Models";
+    Settings.PocoConfigurationNamespace = Settings.Namespace + ".Mappings";
+    Settings.InterfaceNamespace         = Settings.Namespace + ".Interfaces";
+
+    // Folders
+    Settings.ContextFolder           = @"Context";
+    Settings.InterfaceFolder         = @"Interfaces";
+    Settings.PocoFolder              = @"Models";
+    Settings.PocoConfigurationFolder = @"Mappings";
+
+    // EF6 defaults
+    Settings.AddParameterlessConstructorToDbContext = true;
+    Settings.UsePascalCase          = true;
+    Settings.UseLazyLoading         = true;
+    Settings.UseDataAnnotations     = false;
+    Settings.AddUnitTestingDbContext = false;
+
+    FilterSettings.Reset();
+    FilterSettings.AddDefaults();
+    Settings.PrependSchemaName = false;
+
+    Settings.ElementsToGenerate = Elements.Poco | Elements.Context | Elements.Interface | Elements.PocoConfiguration;
+
+    // ===== Run generator =====
+    var outer     = (GeneratedTextTransformation)this;
+    var files     = new FileManagementService(outer);
+    var generator = GeneratorFactory.Create(files, FileManagerFactory.GetFileManagerType());
+    if (generator != null && generator.InitialisationOk)
+    {
+        generator.ReadDatabase();
+        generator.GenerateCode();
+    }
+    files.Process(true);
+#>
+
+<#
+    // ===== Auto-add generated files (selective folders, NO text output) =====
+
+    // Toggle verbose diagnostics to Debug/StatusBar (never into .cs):
+    bool VERBOSE_DIAGNOSTICS = false;
+
+    // Choose which folders to scan (add "" if you also want ROOT):
+    var includeFolders = new System.Collections.Generic.List<string>();
+    includeFolders.Add(Settings.ContextFolder);            // "Context"
+    includeFolders.Add(Settings.InterfaceFolder);          // "Interfaces"
+    includeFolders.Add(Settings.PocoFolder);               // "Models"
+    includeFolders.Add(Settings.PocoConfigurationFolder);  // "Mappings"
+    // includeFolders.Add("");                              // <— uncomment to also scan project ROOT
+
+    string[] excludeEndsWith = new string[] { ".designer.cs", ".g.cs" };
+
+    try
+    {
+        var sp  = Host as IServiceProvider;
+        var dte = (EnvDTE.DTE)(sp != null ? sp.GetService(typeof(EnvDTE.DTE)) : null);
+
+        if (dte == null) { Log("DTE not available (not inside Visual Studio).", VERBOSE_DIAGNOSTICS, sp); }
+        else
+        {
+            string ttDir = Path.GetDirectoryName(Host.TemplateFile);
+            Project targetProject = FindProjectByDirectory(dte, ttDir);
+
+            if (targetProject == null) { Log("Could not resolve target project for this .tt.", VERBOSE_DIAGNOSTICS, sp); }
+            else
+            {
+                string projectDir = string.IsNullOrEmpty(targetProject.FullName) ? null : Path.GetDirectoryName(targetProject.FullName);
+                Log("Target project: " + targetProject.Name, VERBOSE_DIAGNOSTICS, sp);
+
+                var seen = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var rel in includeFolders)
+                {
+                    string abs = string.IsNullOrEmpty(rel) ? projectDir : Path.Combine(projectDir, rel);
+                    if (string.IsNullOrEmpty(abs) || !Directory.Exists(abs)) { Log("Skip (missing): " + abs, VERBOSE_DIAGNOSTICS, sp); continue; }
+                    if (seen.Contains(abs)) continue;
+                    seen.Add(abs);
+
+                    Log("Scanning: " + abs, VERBOSE_DIAGNOSTICS, sp);
+
+                    string[] filesToAdd = Directory.GetFiles(abs, "*.cs", SearchOption.AllDirectories);
+                    for (int j = 0; j < filesToAdd.Length; j++)
+                    {
+                        string f = filesToAdd[j];
+
+                        bool skip = false;
+                        for (int k = 0; k < excludeEndsWith.Length; k++)
+                        {
+                            string pat = excludeEndsWith[k];
+                            if (!string.IsNullOrEmpty(pat) && f.EndsWith(pat, StringComparison.OrdinalIgnoreCase))
+                            { skip = true; break; }
+                        }
+                        if (skip) continue;
+
+                        if (dte.Solution.FindProjectItem(f) == null)
+                        {
+                            AddFileToProjectWithFolders(targetProject, projectDir, f);
+                            Log("Added: " + f, VERBOSE_DIAGNOSTICS, sp);
+                        }
+                        else
+                        {
+                            Log("Already: " + f, VERBOSE_DIAGNOSTICS, sp);
+                        }
+                    }
+                }
+
+                try { targetProject.Save(); } catch {}
+            }
+        }
+    }
+    catch (System.Exception ex)
+    {
+        Log("Auto-add failed: " + ex.Message, true, Host as IServiceProvider);
+    }
+#>
+
+<#+
+void Log(string msg, bool verbose, IServiceProvider sp)
+{
+    if (!verbose) return;
+    try
+    {
+        Debug.WriteLine("[ReversePOCO] " + msg);
+        var dte = (EnvDTE.DTE)(sp != null ? sp.GetService(typeof(EnvDTE.DTE)) : null);
+        if (dte != null) dte.StatusBar.Text = msg;
+    }
+    catch { }
+}
+
+Project FindProjectByDirectory(EnvDTE.DTE dte, string pathWithinProject)
+{
+    if (dte == null || string.IsNullOrEmpty(pathWithinProject)) return null;
+    var all = new System.Collections.Generic.List<Project>();
+    foreach (Project p in dte.Solution.Projects) AddProjectAndChildren(p, all);
+
+    Project best = null; int bestLen = -1;
+    foreach (Project p in all)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(p.FullName)) continue;
+            var pDir = Path.GetDirectoryName(p.FullName);
+            if (string.IsNullOrEmpty(pDir)) continue;
+
+            if (pathWithinProject.StartsWith(pDir, StringComparison.OrdinalIgnoreCase))
+            {
+                if (pDir.Length > bestLen) { best = p; bestLen = pDir.Length; }
+            }
+        }
+        catch { }
+    }
+    return best;
+}
+
+void AddProjectAndChildren(Project p, System.Collections.Generic.List<Project> acc)
+{
+    if (p == null) return;
+    try { if (!string.IsNullOrEmpty(p.FullName)) acc.Add(p); } catch { }
+    ProjectItems items = null;
+    try { items = p.ProjectItems; } catch { }
+    if (items != null)
+    {
+        foreach (ProjectItem it in items)
+        {
+            try { if (it.SubProject != null) AddProjectAndChildren(it.SubProject, acc); }
+            catch { }
+        }
+    }
+}
+
+void AddFileToProjectWithFolders(Project project, string projectDir, string filePath)
+{
+    if (project == null || string.IsNullOrEmpty(projectDir) || string.IsNullOrEmpty(filePath)) return;
+    if (!File.Exists(filePath)) return;
+
+    // Relative path inside the project
+    string rel = filePath.Substring(projectDir.Length)
+                         .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+    char[] seps = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+    string[] parts = rel.Split(seps, StringSplitOptions.RemoveEmptyEntries);
+
+    ProjectItems items = project.ProjectItems;
+
+    // Walk / create folders (all parts except the last, which is the file name)
+    for (int i = 0; i < parts.Length - 1; i++)
+    {
+        string part = parts[i];
+        if (string.IsNullOrEmpty(part)) continue;
+
+        ProjectItem folderItem = null;
+        foreach (ProjectItem it in items)
+        {
+            try
+            {
+                if (it.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFolder &&
+                    it.Name.Equals(part, StringComparison.OrdinalIgnoreCase))
+                { folderItem = it; break; }
+            }
+            catch { }
+        }
+
+        if (folderItem == null)
+        {
+            // Build the physical path incrementally: projectDir\parts[0]\...\parts[i]
+            string[] subParts = new string[i + 1];
+            for (int k = 0; k <= i; k++) subParts[k] = parts[k];
+
+            string full = Path.Combine(projectDir, Path.Combine(subParts));
+            if (!Directory.Exists(full)) Directory.CreateDirectory(full);
+            folderItem = items.AddFromDirectory(full);
+        }
+
+        items = folderItem.ProjectItems;
+    }
+
+    // Add the file itself
+    items.AddFromFile(filePath);
+}
+#>
