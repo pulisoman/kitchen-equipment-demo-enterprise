@@ -2,8 +2,11 @@
 
 using System;
 using System.Data.Entity.Infrastructure;
+using KitchenEquipmentDemo.Enterprise.Data.Interfaces;
+using KitchenEquipmentDemo.Enterprise.Data.Models;
+using KitchenEquipmentDemo.Enterprise.Data.Mappings;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Context
 {
     public class AppDbContextFactory : IDbContextFactory<AppDbContext>
     {

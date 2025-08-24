@@ -6,14 +6,13 @@ using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Models
 {
     // user
     public class User
     {
         public int UserId { get; set; } // user_id (Primary key)
         public string UserType { get; set; } // user_type (length: 20)
-        public int? ManagerId { get; set; } // manager_id
         public string FirstName { get; set; } // first_name (length: 100)
         public string LastName { get; set; } // last_name (length: 100)
         public string EmailAddress { get; set; } // email_address (length: 256)
@@ -42,11 +41,6 @@ namespace KitchenEquipmentDemo.Enterprise.Data
         public virtual ICollection<Site> Site { get; set; } // site.FK_site_user
 
         /// <summary>
-        /// Child User where [user].[manager_id] point to this entity (FK_user_manager)
-        /// </summary>
-        public virtual ICollection<User> User1 { get; set; } // user.FK_user_manager
-
-        /// <summary>
         /// Child UserRegistrationRequest where [user_registration_request].[requested_manager] point to this entity (FK_urr_requested_manager)
         /// </summary>
         public virtual ICollection<UserRegistrationRequest> UserRegistrationRequest_RequestedManager { get; set; } // user_registration_request.FK_urr_requested_manager
@@ -56,20 +50,12 @@ namespace KitchenEquipmentDemo.Enterprise.Data
         /// </summary>
         public virtual ICollection<UserRegistrationRequest> UserRegistrationRequest_ReviewedBy { get; set; } // user_registration_request.FK_urr_reviewed_by
 
-        // Foreign keys
-
-        /// <summary>
-        /// Parent User pointed by [user].([ManagerId]) (FK_user_manager)
-        /// </summary>
-        public virtual User User_ManagerId { get; set; } // FK_user_manager
-
         public User()
         {
             CreatedAt = DateTime.UtcNow;
             IsDeleted = false;
             Equipment = new List<Equipment>();
             Site = new List<Site>();
-            User1 = new List<User>();
             UserRegistrationRequest_RequestedManager = new List<UserRegistrationRequest>();
             UserRegistrationRequest_ReviewedBy = new List<UserRegistrationRequest>();
         }

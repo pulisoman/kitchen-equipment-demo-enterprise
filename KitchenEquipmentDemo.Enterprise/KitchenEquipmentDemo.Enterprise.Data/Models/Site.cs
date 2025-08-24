@@ -6,13 +6,15 @@ using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Models
 {
     // site
     public class Site
     {
         public int SiteId { get; set; } // site_id (Primary key)
         public int UserId { get; set; } // user_id
+        public string Code { get; set; } // code (length: 100)
+        public string Name { get; set; } // name (length: 100)
         public string Description { get; set; } // description (length: 200)
         public bool Active { get; set; } // active
         public DateTime CreatedAt { get; set; } // created_at

@@ -17,8 +17,11 @@ using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KitchenEquipmentDemo.Enterprise.Data.Interfaces;
+using KitchenEquipmentDemo.Enterprise.Data.Models;
+using KitchenEquipmentDemo.Enterprise.Data.Mappings;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Context
 {
     // ****************************************************************************************************
     // This is not a commercial licence, therefore only a few tables/views/stored procedures are generated.

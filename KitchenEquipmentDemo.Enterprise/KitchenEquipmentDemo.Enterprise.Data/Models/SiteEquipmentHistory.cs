@@ -6,7 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Models
 {
     // site_equipment_history
     public class SiteEquipmentHistory

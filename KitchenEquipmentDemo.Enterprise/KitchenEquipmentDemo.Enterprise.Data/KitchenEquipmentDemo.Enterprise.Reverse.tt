@@ -26,6 +26,7 @@
     Settings.DbContextName        = "AppDbContext";
 
     // Namespaces
+    Settings.UseNamespace                  = true;
     Settings.Namespace                  = "KitchenEquipmentDemo.Enterprise.Data";
     Settings.ContextNamespace           = Settings.Namespace + ".Context";
     Settings.PocoNamespace              = Settings.Namespace + ".Models";

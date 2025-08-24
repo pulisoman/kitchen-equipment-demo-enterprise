@@ -4135,6 +4135,7 @@
     {
         public string DbName { get; private set; }
         public string Filename { get; private set; }
+        public string Folder { get; private set; }
         public string Region { get; private set; }
         public List<string> Usings { get; private set; }
         public List<string> Code { get; private set; }
@@ -4148,7 +4149,11 @@
             Code = new List<string>();
 
             if (!string.IsNullOrWhiteSpace(folder))
+            { 
                 Filename = Path.Combine(folder, filename);
+                Folder = folder;
+            }
+               
 
             AddUsings(usings);
         }
@@ -4252,7 +4257,10 @@
             {
                 var name = Settings.Namespace + subNamespace;
                 header.AppendLine("namespace " + name.Trim().Replace(' ', '_'));
-                header.Append("{");
+                if (!Settings.GenerateSeparateFiles)
+                {
+                     header.Append("{");
+                }               
             }
 
             Namespace = header.ToString();
@@ -5731,17 +5739,60 @@
                     _fileManagementService.WriteLine(header.Trim());
 
                 var usings = codeGenerator.GenerateUsings(code.GetUsings());
+                var addUsing = _fileHeaderFooter.Namespace.Replace("namespace ", "using ");                
                 if (!string.IsNullOrWhiteSpace(usings))
                 {
                     _fileManagementService.WriteLine("");
                     _fileManagementService.WriteLine(usings.Trim());
+
+                     Settings.ContextFolder           = @"Context";
+                     Settings.InterfaceFolder         = @"Interfaces";
+                     Settings.PocoFolder              = @"Models";
+                     Settings.PocoConfigurationFolder = @"Mappings";
+
+                    if (!string.IsNullOrWhiteSpace(Settings.ContextFolder) && code.Folder == Settings.ContextFolder)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Settings.InterfaceFolder))
+                        {
+                             _fileManagementService.WriteLine(addUsing.Trim() + "." + Settings.InterfaceFolder + ";");                      
+                        }
+                        
+                        if (!string.IsNullOrWhiteSpace(Settings.PocoFolder))
+                        {
+                             _fileManagementService.WriteLine(addUsing.Trim() + "." + Settings.PocoFolder + ";");                      
+                        }   
+
+                        if (!string.IsNullOrWhiteSpace(Settings.PocoConfigurationFolder))
+                        {
+                             _fileManagementService.WriteLine(addUsing.Trim() + "." + Settings.PocoConfigurationFolder + ";");                      
+                        }   
+                    }
+                    else if (!string.IsNullOrWhiteSpace(Settings.InterfaceFolder) && code.Folder == Settings.InterfaceFolder)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Settings.PocoFolder))
+                        {
+                             _fileManagementService.WriteLine(addUsing.Trim() + "." + Settings.PocoFolder + ";");                      
+                        }
+                    }
+                    else if (!string.IsNullOrWhiteSpace(Settings.PocoConfigurationFolder) && code.Folder == Settings.PocoConfigurationFolder)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Settings.PocoFolder))
+                        {
+                             _fileManagementService.WriteLine(addUsing.Trim() + "." + Settings.PocoFolder + ";");                      
+                        }
+                    }
                 }
 
-                var ns = _fileHeaderFooter.Namespace;
+                var ns = _fileHeaderFooter.Namespace;                
                 if (!string.IsNullOrWhiteSpace(ns))
-                {
+                {                   
+                    if (!string.IsNullOrWhiteSpace(code.Folder))
+                    {
+                       ns = (ns.Trim() + "." + code.Folder.Trim());
+                    } 
                     _fileManagementService.WriteLine("");
                     _fileManagementService.WriteLine(ns.Trim());
+                    _fileManagementService.WriteLine("{");
                 }
             }
 

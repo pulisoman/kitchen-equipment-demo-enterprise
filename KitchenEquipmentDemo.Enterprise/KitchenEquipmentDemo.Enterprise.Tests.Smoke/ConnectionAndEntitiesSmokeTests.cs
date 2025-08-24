@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using KitchenEquipmentDemo.Enterprise.Data;
+using KitchenEquipmentDemo.Enterprise.Data.Context;
 namespace KitchenEquipmentDemo.Enterprise.Tests.Smoke
 {
     [TestFixture]

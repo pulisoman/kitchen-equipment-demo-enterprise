@@ -4,8 +4,9 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.Spatial;
+using KitchenEquipmentDemo.Enterprise.Data.Models;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
 {
     // ****************************************************************************************************
     // This is not a commercial licence, therefore only a few tables/views/stored procedures are generated.
@@ -26,6 +27,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data
 
             Property(x => x.EquipmentId).HasColumnName(@"equipment_id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.SerialNumber).HasColumnName(@"serial_number").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
             Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar").IsRequired().HasMaxLength(200);
             Property(x => x.Condition).HasColumnName(@"condition").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
             Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsRequired();

@@ -6,7 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Models
 {
     // ****************************************************************************************************
     // This is not a commercial licence, therefore only a few tables/views/stored procedures are generated.
@@ -17,6 +17,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data
     {
         public int EquipmentId { get; set; } // equipment_id (Primary key)
         public string SerialNumber { get; set; } // serial_number (length: 100)
+        public string Name { get; set; } // name (length: 100)
         public string Description { get; set; } // description (length: 200)
         public string Condition { get; set; } // condition (length: 20)
         public int UserId { get; set; } // user_id

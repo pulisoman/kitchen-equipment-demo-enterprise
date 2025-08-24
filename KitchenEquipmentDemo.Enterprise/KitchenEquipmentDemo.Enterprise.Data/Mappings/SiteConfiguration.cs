@@ -4,8 +4,9 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.Spatial;
+using KitchenEquipmentDemo.Enterprise.Data.Models;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
 {
     // site
     public class SiteConfiguration : EntityTypeConfiguration<Site>
@@ -22,6 +23,8 @@ namespace KitchenEquipmentDemo.Enterprise.Data
 
             Property(x => x.SiteId).HasColumnName(@"site_id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
+            Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
+            Property(x => x.Name).HasColumnName(@"name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
             Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar").IsRequired().HasMaxLength(200);
             Property(x => x.Active).HasColumnName(@"active").HasColumnType("bit").IsRequired();
             Property(x => x.CreatedAt).HasColumnName(@"created_at").HasColumnType("datetime2").IsRequired();

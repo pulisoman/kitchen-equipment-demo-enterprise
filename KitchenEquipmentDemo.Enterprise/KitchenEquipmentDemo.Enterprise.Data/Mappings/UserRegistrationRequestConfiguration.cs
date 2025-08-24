@@ -4,8 +4,9 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.Spatial;
+using KitchenEquipmentDemo.Enterprise.Data.Models;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
 {
     // user_registration_request
     public class UserRegistrationRequestConfiguration : EntityTypeConfiguration<UserRegistrationRequest>

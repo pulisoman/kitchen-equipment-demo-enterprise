@@ -4,8 +4,9 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.Spatial;
+using KitchenEquipmentDemo.Enterprise.Data.Models;
 
-namespace KitchenEquipmentDemo.Enterprise.Data
+namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
 {
     // user
     public class UserConfiguration : EntityTypeConfiguration<User>
@@ -22,7 +23,6 @@ namespace KitchenEquipmentDemo.Enterprise.Data
 
             Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.UserType).HasColumnName(@"user_type").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
-            Property(x => x.ManagerId).HasColumnName(@"manager_id").HasColumnType("int").IsOptional();
             Property(x => x.FirstName).HasColumnName(@"first_name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
             Property(x => x.LastName).HasColumnName(@"last_name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
             Property(x => x.EmailAddress).HasColumnName(@"email_address").HasColumnType("nvarchar").IsRequired().HasMaxLength(256);
@@ -37,9 +37,6 @@ namespace KitchenEquipmentDemo.Enterprise.Data
             Property(x => x.UpdatedBy).HasColumnName(@"updated_by").HasColumnType("int").IsOptional();
             Property(x => x.IsDeleted).HasColumnName(@"is_deleted").HasColumnType("bit").IsRequired();
             Property(x => x.RowVersion).HasColumnName(@"row_version").HasColumnType("timestamp").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
-
-            // Foreign keys
-            HasOptional(a => a.User_ManagerId).WithMany(b => b.User1).HasForeignKey(c => c.ManagerId).WillCascadeOnDelete(false); // FK_user_manager
         }
     }
 
