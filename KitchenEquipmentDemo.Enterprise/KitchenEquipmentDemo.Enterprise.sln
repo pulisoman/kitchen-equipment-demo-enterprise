@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenEquipmentDemo.Enterp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenEquipmentDemo.Enterprise.Tests.Smoke", "KitchenEquipmentDemo.Enterprise.Tests.Smoke\KitchenEquipmentDemo.Enterprise.Tests.Smoke.csproj", "{D7EF819D-D65A-4937-A288-66F774CA31FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KitchenEquipmentDemo.Enterprise.Application", "KitchenEquipmentDemo.Enterprise.Application\KitchenEquipmentDemo.Enterprise.Application.csproj", "{77AB6530-B28D-466F-A0F8-ABFEC426DBC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{D7EF819D-D65A-4937-A288-66F774CA31FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7EF819D-D65A-4937-A288-66F774CA31FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7EF819D-D65A-4937-A288-66F774CA31FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77AB6530-B28D-466F-A0F8-ABFEC426DBC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77AB6530-B28D-466F-A0F8-ABFEC426DBC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77AB6530-B28D-466F-A0F8-ABFEC426DBC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77AB6530-B28D-466F-A0F8-ABFEC426DBC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{58096C5F-D360-4AFA-B928-B0CB33E96721} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{2D7768D3-B614-48A2-82F3-088F0B0281F0} = {A5721511-AE8F-4896-BB35-79DEC32CE72A}
 		{D7EF819D-D65A-4937-A288-66F774CA31FE} = {A5721511-AE8F-4896-BB35-79DEC32CE72A}
+		{77AB6530-B28D-466F-A0F8-ABFEC426DBC6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {985AADE8-9EFB-425F-A62D-0766CF5C13F6}
