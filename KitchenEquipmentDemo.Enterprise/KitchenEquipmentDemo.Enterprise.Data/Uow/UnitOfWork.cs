@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-using System.Data.Entity.Core;
+using System.Linq;
+using System.Threading.Tasks;
 using KitchenEquipmentDemo.Enterprise.Data.Context;
 
 namespace KitchenEquipmentDemo.Enterprise.Data.Uow
 {
-    /// <summary>
-    /// Coordinates a set of repository operations against a single AppDbContext.
-    /// </summary>
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _db;
         private bool _disposed;
@@ -22,17 +18,31 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Uow
 
         public int SaveChanges() => _db.SaveChanges();
 
-        public Task<int> SaveChangesAsync() => _db.SaveChangesAsync();
+        public async Task<int> SaveChangesAsync()
+        {
+            try
+            {
+                return await _db.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                var details = ex.Message;
+                throw new Exception("Validation failed: " + details, ex);
+            }
+            //catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            //{
+            //    var details = string.Join("; ",
+            //        ex.EntityValidationErrors.SelectMany(e =>
+            //            e.ValidationErrors.Select(v =>
+            //                $"{e.Entry.Entity.GetType().Name}.{v.PropertyName}: {v.ErrorMessage} (Value: {e.Entry.CurrentValues[v.PropertyName]})")));
+            //    throw new System.Data.Entity.Validation.DbEntityValidationException("Validation failed: " + details, ex);
+            //}
+        }
 
-        /// <summary>
-        /// Start a database transaction. Use with try/catch and Commit/Rollback.
-        /// </summary>
+
         public DbContextTransaction BeginTransaction()
             => _db.Database.BeginTransaction();
 
-        /// <summary>
-        /// Helper to execute a function inside a transaction (auto commit/rollback).
-        /// </summary>
         public async Task ExecuteInTransactionAsync(Func<Task> action)
         {
             using (var tx = _db.Database.BeginTransaction())
@@ -43,7 +53,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Uow
                     await _db.SaveChangesAsync();
                     tx.Commit();
                 }
-                catch (Exception)
+                catch
                 {
                     tx.Rollback();
                     throw;

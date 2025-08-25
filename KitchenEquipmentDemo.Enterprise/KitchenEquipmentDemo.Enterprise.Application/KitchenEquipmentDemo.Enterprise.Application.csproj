@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authorization\AccessGuard.cs" />
+    <Compile Include="Composition\ServiceFactory.cs" />
     <Compile Include="Contracts\Dtos\Authorization\LoginRequestDto.cs" />
     <Compile Include="Contracts\Dtos\Authorization\LoginResultDto.cs" />
     <Compile Include="Contracts\Dtos\Authorization\SignupRequestDto.cs" />
@@ -60,14 +62,28 @@
     <Compile Include="Contracts\Services\ISiteService.cs" />
     <Compile Include="Contracts\Services\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AuthService.cs" />
+    <Compile Include="Services\EquipmentService.cs" />
+    <Compile Include="Services\RegistrationService.cs" />
+    <Compile Include="Services\SiteService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Validation\EquipmentValidator.cs" />
+    <Compile Include="Validation\Guard.cs" />
+    <Compile Include="Validation\IValidator.cs" />
+    <Compile Include="Validation\LoginRequestValidator.cs" />
+    <Compile Include="Validation\SignupRequestValidator.cs" />
+    <Compile Include="Validation\SiteValidator.cs" />
+    <Compile Include="Validation\UserValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Authorization\" />
     <Folder Include="Common\" />
-    <Folder Include="Composition\" />
     <Folder Include="Mapping\" />
-    <Folder Include="Services\" />
-    <Folder Include="Validation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KitchenEquipmentDemo.Enterprise.Data\KitchenEquipmentDemo.Enterprise.Data.csproj">
+      <Project>{58096c5f-d360-4afa-b928-b0cb33e96721}</Project>
+      <Name>KitchenEquipmentDemo.Enterprise.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

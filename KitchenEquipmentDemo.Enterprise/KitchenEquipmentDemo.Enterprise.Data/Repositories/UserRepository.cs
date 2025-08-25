@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using KitchenEquipmentDemo.Enterprise.Data.Context;
@@ -10,33 +11,61 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Repositories
     {
         public UserRepository(AppDbContext db) : base(db) { }
 
-        public async Task<User> FindByUserNameAsync(string userName)
+        public Task<User> GetByIdAsync(int id)
         {
-            IQueryable<User> baseQuery = _set.AsNoTracking();
-
-            var query =
-                from u in baseQuery
-                where u.IsDeleted == false
-                   && u.UserName == userName
+            var q =
+                from u in _set
+                where u.UserId == id
                 select u;
-
-            var entity = await query.FirstOrDefaultAsync();
-            return entity;
+            return q.FirstOrDefaultAsync();
         }
 
-        public async Task<bool> IsSuperAdminAsync(int userId)
+        public Task<List<User>> GetAllAsync()
         {
-            IQueryable<User> baseQuery = _set;
+            var q =
+                from u in _set
+                select u;
+            return q.ToListAsync();
+        }
 
-            var query =
-                from u in baseQuery
+        public Task<User> FindByUserNameAsync(string userName)
+        {
+            var q =
+                from u in _set
+                where u.UserName == userName
+                select u;
+            return q.FirstOrDefaultAsync();
+        }
+
+        public Task<bool> UserNameExistsAsync(string userName)
+        {
+            var q =
+                from u in _set
                 where u.IsDeleted == false
-                   && u.UserId == userId
-                   && u.UserType == "SuperAdmin"
+                   && u.UserName == userName
                 select u.UserId;
+            return q.AnyAsync();
+        }
 
-            var isSuper = await query.AnyAsync();
-            return isSuper;
+        public Task<bool> EmailExistsAsync(string email)
+        {
+            var q =
+                from u in _set
+                where u.IsDeleted == false
+                   && u.EmailAddress == email
+                select u.UserId;
+            return q.AnyAsync();
+        }
+
+        public Task AddAsync(User entity)
+        {
+            _set.Add(entity);
+            return Task.CompletedTask;
+        }
+
+        public void Update(User entity)
+        {
+            _db.Entry(entity).State = EntityState.Modified;
         }
     }
 }

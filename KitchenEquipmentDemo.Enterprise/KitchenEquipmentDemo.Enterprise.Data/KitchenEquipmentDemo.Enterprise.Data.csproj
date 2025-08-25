@@ -92,6 +92,7 @@
     <Compile Include="Repositories\SiteRepository.cs" />
     <Compile Include="Repositories\UserRegistrationRequestRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Uow\IUnitOfWork.cs" />
     <Compile Include="Uow\UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>

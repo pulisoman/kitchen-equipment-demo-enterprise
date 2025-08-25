@@ -141,7 +141,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthServiceTests.cs" />
+    <Compile Include="EquipmentServiceAdvancedTests.cs" />
+    <Compile Include="EquipmentServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationServiceTests.cs" />
+    <Compile Include="SiteServiceAdvancedTests.cs" />
+    <Compile Include="SiteServiceTests.cs" />
+    <Compile Include="TestBase.cs" />
+    <Compile Include="UserServiceTests.cs" />
+    <Compile Include="ValidationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -150,6 +159,16 @@
   <ItemGroup>
     <Analyzer Include="..\packages\MSTest.Analyzers.3.10.2\analyzers\dotnet\cs\MSTest.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\MSTest.Analyzers.3.10.2\analyzers\dotnet\cs\MSTest.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KitchenEquipmentDemo.Enterprise.Application\KitchenEquipmentDemo.Enterprise.Application.csproj">
+      <Project>{77ab6530-b28d-466f-a0f8-abfec426dbc6}</Project>
+      <Name>KitchenEquipmentDemo.Enterprise.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KitchenEquipmentDemo.Enterprise.Data\KitchenEquipmentDemo.Enterprise.Data.csproj">
+      <Project>{58096c5f-d360-4afa-b928-b0cb33e96721}</Project>
+      <Name>KitchenEquipmentDemo.Enterprise.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
