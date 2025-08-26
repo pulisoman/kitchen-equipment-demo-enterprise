@@ -8,7 +8,6 @@ using KitchenEquipmentDemo.Enterprise.Application.Contracts.Services;
 using KitchenEquipmentDemo.Enterprise.Data.Repositories;
 using KitchenEquipmentDemo.Enterprise.Data.Uow;
 using KitchenEquipmentDemo.Enterprise.Data.Models;
-using System;
 
 namespace KitchenEquipmentDemo.Enterprise.Application.Services
 {
@@ -211,7 +210,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
         }
 
         // ---- helpers ----
-        private static EquipmentDto Map(Equipment e) => new EquipmentDto
+        private static EquipmentDto   Map(Equipment e) => new EquipmentDto
         {
             EquipmentId = e.EquipmentId,
             UserId = e.UserId,

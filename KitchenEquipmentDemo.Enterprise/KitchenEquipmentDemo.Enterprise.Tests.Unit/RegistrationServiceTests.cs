@@ -33,7 +33,7 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
             Assert.IsTrue(approve.Succeeded, string.Join("; ", approve.Errors));
 
             // Now login should succeed
-            var login = await AuthSvc.LoginAsync(new LoginRequestDto { UserName = signup.UserName, PasswordPlain = signup.PasswordPlain });
+            var login = await AuthSvc.LoginAsync(new LoginRequestDto { UserName = signup.UserName, Password = signup.PasswordPlain });
             Assert.IsTrue(login.Succeeded);
             Assert.IsTrue(login.Data.Success);
         }

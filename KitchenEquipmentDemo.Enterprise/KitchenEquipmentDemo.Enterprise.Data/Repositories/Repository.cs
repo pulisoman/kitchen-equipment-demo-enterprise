@@ -21,13 +21,6 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Repositories
             _set = _db.Set<T>();
         }
 
-        // READ (single)
-        public virtual async Task<T> GetByIdAsync(int id)
-        {
-            var entity = await _set.FindAsync(id);
-            return entity;
-        }
-
         // READ (all)
         public virtual async Task<List<T>> GetAllAsync(bool asNoTracking = true)
         {

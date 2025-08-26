@@ -10,7 +10,7 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
         [TestMethod]
         public async Task Login_Invalid_Returns_False()
         {
-            var res = await AuthSvc.LoginAsync(new LoginRequestDto { UserName = "nope", PasswordPlain = "nope" });
+            var res = await AuthSvc.LoginAsync(new LoginRequestDto { UserName = "nope", Password = "nope" });
             Assert.IsTrue(res.Succeeded);
             Assert.IsFalse(res.Data.Success);
         }

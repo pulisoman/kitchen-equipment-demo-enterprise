@@ -13,7 +13,7 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
         public void Login_Validator_Flags_Missing()
         {
             var v = new LoginRequestValidator();
-            var errs = v.Validate(new LoginRequestDto { UserName = "", PasswordPlain = "" });
+            var errs = v.Validate(new LoginRequestDto { UserName = "", Password = "" });
             Assert.IsTrue(errs.Count >= 2);
         }
 

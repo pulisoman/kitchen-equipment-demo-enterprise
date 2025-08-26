@@ -81,6 +81,7 @@
     <Compile Include="Mappings\UserConfiguration.cs" />
     <Compile Include="Mappings\UserRegistrationRequestConfiguration.cs" />
     <Compile Include="Models\Equipment.cs" />
+    <Compile Include="Models\NavigateParameter.cs" />
     <Compile Include="Models\Site.cs" />
     <Compile Include="Models\SiteEquipmentHistory.cs" />
     <Compile Include="Models\User.cs" />

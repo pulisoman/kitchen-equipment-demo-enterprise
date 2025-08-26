@@ -10,6 +10,17 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Contracts.Services
         Task<PagedResult<UserDto>> ListAsync(int page, int pageSize, string search = null, int actorUserId = 0);
         Task<OperationResult<UserDto>> GetAsync(int userId, int actorUserId = 0);
         Task<OperationResult<UserDto>> UpdateAsync(UserDto dto, int actorUserId);
-        Task<OperationResult> DeleteAsync(int userId, int actorUserId); // null if skipping concurrency
+        Task<OperationResult> UpdatePasswordAsync(UserPasswordUpdateDto dto, int actorUserId);
+        Task<OperationResult> UpdateUserInfoAsync(UserInfoUpdateDto dto, int actorUserId);
+        Task<OperationResult> DeleteAsync(int userId, int actorUserId);
+        Task<PagedResult<UserDto>> GetPagedAsync(
+        int page,
+        int pageSize,
+        string searchString,
+        bool showDeletedOnly,
+        int actorUserId,
+        string orderBy = "UserId",
+        bool orderByDescending = false);
+
     }
 }

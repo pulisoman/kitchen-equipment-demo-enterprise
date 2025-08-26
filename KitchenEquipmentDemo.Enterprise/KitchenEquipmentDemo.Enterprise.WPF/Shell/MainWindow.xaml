@@ -1,0 +1,202 @@
+﻿<Window x:Class="KitchenEquipmentDemo.Enterprise.WPF.Shell.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Duke Kitchen Equipment Manager"
+        Height="800"
+        Width="1280"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        xmlns:conv="clr-namespace:KitchenEquipmentDemo.Enterprise.WPF.Converters"
+        xmlns:models="clr-namespace:KitchenEquipmentDemo.Enterprise.WPF.Models"
+        >   
+    <Window.Resources>
+        <conv:NavStyleConverter x:Key="NavStyleConverter"/>
+    </Window.Resources>
+    <DockPanel>
+
+        <!-- Top bar -->
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource Brush.Primary}"
+                Height="72">
+            <Grid Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Image Source="/Assets/logo.png"
+                       Height="44"
+                       Margin="4,0"/>
+
+                <TextBlock Grid.Column="1"
+                           Text="Duke Kitchen Equipment Manager"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="{Binding Session.UserName}"
+                               Foreground="White"
+                               Margin="0,0,12,0"/>
+
+                    <!-- Account menu (hidden until authenticated) -->
+                    <Menu Grid.Column="2"
+                          VerticalAlignment="Center"
+                          Background="{x:Null}">
+                        <Menu.Visibility>
+                            <Binding Path="Session.IsAuthenticated">
+                                <Binding.Converter>
+                                    <BooleanToVisibilityConverter/>
+                                </Binding.Converter>
+                            </Binding>
+                        </Menu.Visibility>
+
+                        <MenuItem StaysOpenOnClick="False">
+                            <!-- Person icon with username BELOW the icon -->
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Vertical"
+                                            Margin="0"
+                                            HorizontalAlignment="Right">
+                                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                                               FontSize="18"
+                                               Foreground="White"
+                                               Text="&#xE77B;"
+                                               HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </MenuItem.Header>
+
+                            <!-- Dropdown items -->
+                            <MenuItem Header="Logout"
+                                      Command="{Binding LogoutCommand}"/>
+                        </MenuItem>
+                    </Menu>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Left nav (only visible when authenticated) -->
+        <Border DockPanel.Dock="Left"
+                Background="{StaticResource Brush.Surface}"
+                Width="220">
+            <Border.Visibility>
+                <Binding Path="Session.IsAuthenticated">
+                    <Binding.Converter>
+                        <BooleanToVisibilityConverter/>
+                    </Binding.Converter>
+                </Binding>
+            </Border.Visibility>
+
+            <StackPanel Margin="12">
+                <Button Content="Dashboard"
+                        Style="{Binding Path=Session.SelectedNavItem,
+                        Converter={StaticResource NavStyleConverter},
+                        ConverterParameter={x:Static models:NavItem.Dashboard}}"
+                        Command="{Binding GoDashboardCommand}">
+
+                    <Button.Visibility>
+                        <Binding Path="Session.CanManageDashboard">
+                            <Binding.Converter>
+                                <BooleanToVisibilityConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+
+                <Button Content="Profile"
+                    Style="{Binding Path=Session.SelectedNavItem,
+                    Converter={StaticResource NavStyleConverter},
+                    ConverterParameter={x:Static models:NavItem.Profile}}"
+                    Command="{Binding GoProfileCommand}">
+                    <Button.Visibility>
+                        <Binding Path="Session.CanManageProfile">
+                            <Binding.Converter>
+                                <BooleanToVisibilityConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+
+                <Button Content="Users"
+                    Style="{Binding Path=Session.SelectedNavItem,
+                    Converter={StaticResource NavStyleConverter},
+                    ConverterParameter={x:Static models:NavItem.Users}}"
+                        Command="{Binding GoUsersCommand}">
+                    <Button.Visibility>
+                        <Binding Path="Session.CanManageUsers">
+                            <Binding.Converter>
+                                <BooleanToVisibilityConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+
+                <Button Content="Sites"
+                    Style="{Binding Path=Session.SelectedNavItem,
+                    Converter={StaticResource NavStyleConverter},
+                    ConverterParameter={x:Static models:NavItem.Sites}}"
+                    Command="{Binding GoSitesCommand}">
+                    <Button.Visibility>
+                        <Binding Path="Session.CanManageSites">
+                            <Binding.Converter>
+                                <BooleanToVisibilityConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+
+                <Button Content="Equipments"
+                    Style="{Binding Path=Session.SelectedNavItem,
+                    Converter={StaticResource NavStyleConverter},
+                    ConverterParameter={x:Static models:NavItem.Equipments}}"
+                    Command="{Binding GoEquipmentsCommand}">
+                    <Button.Visibility>
+                        <Binding Path="Session.CanManageEquipments">
+                            <Binding.Converter>
+                                <BooleanToVisibilityConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+
+                <Button Content="Sign-Up Requests"
+                        Style="{Binding Path=Session.SelectedNavItem,
+                        Converter={StaticResource NavStyleConverter},
+                        ConverterParameter={x:Static models:NavItem.SignUpRequests}}"
+                        Command="{Binding GoSignUpRequestsCommand}">
+                    <Button.Visibility>
+                        <Binding Path="Session.CanManageSignUpRequests">
+                            <Binding.Converter>
+                                <BooleanToVisibilityConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+
+                <Button Content="Equipment Activity"
+                        Style="{Binding Path=Session.SelectedNavItem,
+                        Converter={StaticResource NavStyleConverter},
+                        ConverterParameter={x:Static models:NavItem.EquipmentActivity}}"
+                        Command="{Binding GoEquipmentActivityCommand}">
+                    <Button.Visibility>
+                        <Binding Path="Session.CanManageEquipmentActivity">
+                            <Binding.Converter>
+                                <BooleanToVisibilityConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </Button.Visibility>
+                </Button>
+
+                <Button Content="Logout"
+                        Style="{StaticResource NavButton}"
+                        Command="{Binding LogoutCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Content host: this ViewModel will be set by NavigationService -->
+        <ContentControl Content="{Binding Navigation.CurrentViewModel}"/>
+    </DockPanel>
+</Window>

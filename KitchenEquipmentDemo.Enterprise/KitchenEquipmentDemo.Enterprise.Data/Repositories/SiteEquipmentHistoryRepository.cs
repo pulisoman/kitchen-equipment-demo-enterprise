@@ -8,7 +8,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Repositories
     {
         public SiteEquipmentHistoryRepository(AppDbContext db) : base(db) { }
 
-        public Task AddAsync(SiteEquipmentHistory entity)
+        public override Task AddAsync(SiteEquipmentHistory entity)
         {
             _set.Add(entity);
             return Task.CompletedTask;

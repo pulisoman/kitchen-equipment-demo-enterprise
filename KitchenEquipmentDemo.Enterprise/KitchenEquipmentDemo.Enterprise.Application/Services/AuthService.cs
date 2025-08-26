@@ -31,7 +31,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
                     FailureReason = "Invalid username or password."
                 });
 
-            var ok = VerifyPassword(user, request.PasswordPlain);
+            var ok = VerifyPassword(user, request.Password);
             if (!ok)
                 return OperationResult<LoginResultDto>.Success(new LoginResultDto
                 {
@@ -61,20 +61,33 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
         private static bool VerifyPassword(User user, string passwordPlain)
         {
             if (string.IsNullOrEmpty(passwordPlain)) return false;
-            if (user.PasswordHash == null || user.PasswordSalt == null) return false;
 
-            // Basic PBKDF2 verify. If you store algo/iterations, branch by user.PasswordAlgo/Version.
-            // Assume 100,000 iterations, HMACSHA256 by default; adjust to your seeding.
-            const int iterations = 100000;
-            using (var pbkdf2 = new Rfc2898DeriveBytes(passwordPlain, user.PasswordSalt, iterations, HashAlgorithmName.SHA256))
+            var hash = user?.PasswordHash;
+            var salt = user?.PasswordSalt;
+
+            // Reject null/empty/incorrect sizes up front
+            if (hash == null || salt == null) return false;
+            if (hash.Length == 0 || salt.Length == 0) return false;
+
+            // If you know your sizes, enforce them (recommended):
+            // PBKDF2-SHA256 32-byte hash, 16-byte salt (change if you use different)
+            if (hash.Length != 32) return false;
+            if (salt.Length != 16) return false;
+
+            // Make sure these match whatever you used when creating the hash
+            const int iterations = 100_000;
+
+            byte[] candidate;
+            using (var pbkdf2 = new Rfc2898DeriveBytes(passwordPlain, salt, iterations, HashAlgorithmName.SHA256))
             {
-                var candidate = pbkdf2.GetBytes(user.PasswordHash.Length);
-                // constant-time compare
-                if (candidate.Length != user.PasswordHash.Length) return false;
-                int diff = 0;
-                for (int i = 0; i < candidate.Length; i++) diff |= candidate[i] ^ user.PasswordHash[i];
-                return diff == 0;
+                candidate = pbkdf2.GetBytes(hash.Length);
             }
+
+            // Constant-time compare (Framework 4.8 doesn’t have CryptographicOperations.FixedTimeEquals)
+            if (candidate.Length != hash.Length) return false;
+            int diff = 0;
+            for (int i = 0; i < hash.Length; i++) diff |= candidate[i] ^ hash[i];
+            return diff == 0;
         }
     }
 }

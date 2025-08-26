@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="KitchenEquipmentDemo.Enterprise.WPF.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             d:DesignHeight="600" d:DesignWidth="900"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <Grid Background="{StaticResource Brush.White}">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="24">
+
+                <TextBlock Text="Dashboard"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,16"
+                   Foreground="{StaticResource Brush.Text}"/>
+
+                <ItemsControl ItemsSource="{Binding Tiles}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Width="260" Height="160" Margin="0,0,25,25"
+                                    Style="{StaticResource TileButton}" 
+                                    Command="{Binding Command}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Style="{StaticResource TileIcon}" Text="{Binding Icon}"  VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="1" Style="{StaticResource TileTitle}" Text="{Binding Title}"/>
+                                    <TextBlock Grid.Row="2" Style="{StaticResource TileSubtitle}" Text="{Binding Subtitle}"/>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

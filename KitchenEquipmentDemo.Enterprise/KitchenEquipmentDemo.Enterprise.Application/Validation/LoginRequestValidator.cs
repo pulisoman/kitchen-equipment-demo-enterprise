@@ -9,9 +9,9 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Validation
         {
             var errors = new List<string>();
             errors.Required(instance?.UserName, "Username");
-            errors.Required(instance?.PasswordPlain, "Password");
+            errors.Required(instance?.Password, "Password");
             errors.MaxLen(instance?.UserName, 100, "Username");
-            errors.MaxLen(instance?.PasswordPlain, 256, "Password");
+            errors.MaxLen(instance?.Password, 256, "Password");
             return errors;
         }
     }

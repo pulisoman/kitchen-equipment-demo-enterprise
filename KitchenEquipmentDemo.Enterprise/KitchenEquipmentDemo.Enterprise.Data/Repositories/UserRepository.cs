@@ -57,13 +57,51 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Repositories
             return q.AnyAsync();
         }
 
-        public Task AddAsync(User entity)
+
+        //create UserInfoExistsAsync method that will check uniqueness of username and email excluding a specific userId
+
+        public Task<bool> UserInfoExistsAsync(string userName, string email, int excludeUserId)
+        {
+            var q =
+                from u in _set
+                where u.IsDeleted == false
+                   && (u.UserName == userName || u.EmailAddress == email)
+                   && u.UserId != excludeUserId
+                select u.UserId;
+            return q.AnyAsync();
+        }
+
+        //create for each email and username exists method exclyuding a specific userId
+
+        public Task<bool> UserNameExistsAsync(string userName, int excludeUserId)
+        {
+            var q =
+                from u in _set
+                where u.IsDeleted == false
+                   && u.UserName == userName
+                   && u.UserId != excludeUserId
+                select u.UserId;
+            return q.AnyAsync();
+        }
+
+        public Task<bool> EmailExistsAsync(string email, int excludeUserId)
+        {
+            var q =
+                from u in _set
+                where u.IsDeleted == false
+                   && u.EmailAddress == email
+                   && u.UserId != excludeUserId
+                select u.UserId;
+            return q.AnyAsync();
+        }
+
+        public override Task AddAsync(User entity)
         {
             _set.Add(entity);
             return Task.CompletedTask;
         }
 
-        public void Update(User entity)
+        public override void Update(User entity)
         {
             _db.Entry(entity).State = EntityState.Modified;
         }

@@ -23,9 +23,9 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
 
             Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(x => x.UserType).HasColumnName(@"user_type").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
-            Property(x => x.FirstName).HasColumnName(@"first_name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
-            Property(x => x.LastName).HasColumnName(@"last_name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
-            Property(x => x.EmailAddress).HasColumnName(@"email_address").HasColumnType("nvarchar").IsRequired().HasMaxLength(256);
+            Property(x => x.FirstName).HasColumnName(@"first_name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
+            Property(x => x.LastName).HasColumnName(@"last_name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
+            Property(x => x.EmailAddress).HasColumnName(@"email_address").HasColumnType("nvarchar").IsOptional().HasMaxLength(256);
             Property(x => x.UserName).HasColumnName(@"user_name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
             Property(x => x.PasswordHash).HasColumnName(@"password_hash").HasColumnType("varbinary").IsRequired().HasMaxLength(64);
             Property(x => x.PasswordSalt).HasColumnName(@"password_salt").HasColumnType("varbinary").IsRequired().HasMaxLength(16);

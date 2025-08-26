@@ -25,7 +25,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
             Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
             Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
             Property(x => x.Name).HasColumnName(@"name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
-            Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar").IsRequired().HasMaxLength(200);
+            Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar").IsOptional().HasMaxLength(200);
             Property(x => x.Active).HasColumnName(@"active").HasColumnType("bit").IsRequired();
             Property(x => x.CreatedAt).HasColumnName(@"created_at").HasColumnType("datetime2").IsRequired();
             Property(x => x.CreatedBy).HasColumnName(@"created_by").HasColumnType("int").IsOptional();

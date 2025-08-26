@@ -90,13 +90,13 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Repositories
             return q.AnyAsync();
         }
 
-        public Task AddAsync(Site entity)
+        public override Task AddAsync(Site entity)
         {
             _set.Add(entity);
             return Task.CompletedTask;
         }
 
-        public void Update(Site entity)
+        public override void Update(Site entity)
         {
             _db.Entry(entity).State = EntityState.Modified;
         }

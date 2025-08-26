@@ -1,0 +1,135 @@
+﻿<UserControl x:Class="KitchenEquipmentDemo.Enterprise.WPF.Views.UserFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"             
+             xmlns:h="clr-namespace:KitchenEquipmentDemo.Enterprise.WPF.Helpers"
+             Background="White">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource Brush.White}" Padding="0,0,0,12">
+            <TextBlock Text="User Form"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource Brush.Deep}"
+                       FontSize="20"
+                       FontWeight="SemiBold"/>
+        </Border>
+
+        <!-- Content Area -->
+        <Border Grid.Row="1" Background="{StaticResource Brush.White}" 
+                BorderThickness="1" BorderBrush="#EEEEEE"
+                CornerRadius="4" Padding="0">
+
+            <!-- Tabs -->
+            <TabControl>
+                <!-- User Info Tab -->
+                <TabItem Header="User Information">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Scrollable Form -->
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="40,20,40,20" 
+                                        Width="800" 
+                                        HorizontalAlignment="Left">
+                                <TextBlock Text="Username:" Margin="0,0,0,5"/>
+                                <TextBox Margin="0,0,0,15"
+                                           Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Text="First Name:" Margin="0,0,0,5"/>
+                                <TextBox Margin="0,0,0,15"
+                                           Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Text="Last Name:" Margin="0,0,0,5"/>
+                                <TextBox Margin="0,0,0,15"
+                                           Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Text="Email:" Margin="0,0,0,5"/>
+                                <TextBox Margin="0,0,0,15"
+                                           Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Text="User Type:" Margin="0,0,0,5"/>
+                                <ComboBox Margin="0,0,0,20"
+                                          ItemsSource="{Binding UserTypes}"
+                                          SelectedItem="{Binding SelectedUserType}"/>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- Button Panel -->
+                        <Border Grid.Row="1" Background="#F9F9F9" 
+                                BorderThickness="0,1,0,0" BorderBrush="#EEEEEE"
+                                Padding="10">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="Update Info"
+                                        Command="{Binding UpdateInfoCommand }"
+                                        Width="120"
+                                        Height="32"
+                                        Style="{StaticResource BtnAccent}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <!-- Password Change Tab -->
+                <TabItem Header="Change Password">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="91*"/>
+                            <ColumnDefinition Width="789*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Scrollable Password Section -->
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2" Margin="0,0,0,53" Grid.RowSpan="2">
+                            <StackPanel Margin="40,20,40,20" 
+                                        Width="800" 
+                                        HorizontalAlignment="Left">
+                                <TextBlock Text="Current Password:" Margin="0,0,0,5"/>
+                                <PasswordBox
+                                    Margin="0,0,0,15"
+                                    h:PasswordBoxHelper.BindPassword="True"
+                                    h:PasswordBoxHelper.BoundPassword="{Binding CurrentPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Text="New Password:" Margin="0,0,0,5"/>
+                                <PasswordBox
+                                    Margin="0,0,0,15"
+                                    h:PasswordBoxHelper.BindPassword="True"
+                                    h:PasswordBoxHelper.BoundPassword="{Binding NewPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <TextBlock Text="Confirm Password:" Margin="0,0,0,5"/>
+                                <PasswordBox
+                                    Margin="0,0,0,15"
+                                    h:PasswordBoxHelper.BindPassword="True"
+                                    h:PasswordBoxHelper.BoundPassword="{Binding ConfirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- Button Panel -->
+                        <Border Grid.Row="1" Background="#F9F9F9" 
+                                BorderThickness="0,1,0,0" BorderBrush="#EEEEEE"
+                                Padding="10" Grid.ColumnSpan="2">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="Change Password"
+                                        Command="{Binding ChangePasswordCommand }"
+                                        Width="150"
+                                        Height="32"
+                                        Style="{StaticResource BtnAccent}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Border>
+    </Grid>
+</UserControl>
