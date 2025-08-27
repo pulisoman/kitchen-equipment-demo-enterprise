@@ -38,13 +38,13 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             _userReg = userReg ?? throw new ArgumentNullException(nameof(userReg));
             CancelCommand = new AsyncRelayCommand(CancelAsync);
             SignUpCommand = new AsyncRelayCommand(SignUpAsync);
-            //Testing
-            FirstName = "Norman";
-            LastName = "Super";
-            EmailAddress = "norman.super@example.com";
-            UserName = "norman.super";
-            Password = "Duke!N0rm@n#2025$KE";
-            ConfirmPassword = "Duke!N0rm@n#2025$KE";
+            ////Testing
+            //FirstName = "Norman";
+            //LastName = "Super";
+            //EmailAddress = "norman.super@example.com";
+            //UserName = "norman.super";
+            //Password = "Duke!N0rm@n#2025$KE";
+            //ConfirmPassword = "Duke!N0rm@n#2025$KE";
             UserType = UserType.Admin;
         }
 

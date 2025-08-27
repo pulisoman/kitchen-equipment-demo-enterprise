@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{A5721511-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db", "db", "{3CE50E58-1387-4E3E-A88A-6DF3BCE3EAE2}"
 	ProjectSection(SolutionItems) = preProject
+		InitialDatabase.sql = InitialDatabase.sql
 		ResetDatabase.sql = ResetDatabase.sql
 	EndProjectSection
 EndProject
