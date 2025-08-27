@@ -12,7 +12,7 @@
 
         <!-- Header -->
         <Border Grid.Row="0" Background="{StaticResource Brush.White}" Padding="0,0,0,12">
-            <TextBlock Text="User Form"
+            <TextBlock Text="{Binding ScreenName}"
                        VerticalAlignment="Center"
                        Foreground="{StaticResource Brush.Deep}"
                        FontSize="20"
@@ -78,7 +78,7 @@
                 </TabItem>
 
                 <!-- Password Change Tab -->
-                <TabItem Header="Change Password">
+                <TabItem Header="Account Security">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="91*"/>

@@ -26,10 +26,9 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
             Property(x => x.LastName).HasColumnName(@"last_name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
             Property(x => x.EmailAddress).HasColumnName(@"email_address").HasColumnType("nvarchar").IsOptional().HasMaxLength(256);
             Property(x => x.UserName).HasColumnName(@"user_name").HasColumnType("nvarchar").IsRequired().HasMaxLength(100);
+            Property(x => x.UserType).HasColumnName(@"user_type").HasColumnType("nvarchar").IsOptional().HasMaxLength(20);
             Property(x => x.PasswordHash).HasColumnName(@"password_hash").HasColumnType("varbinary").IsRequired().HasMaxLength(64);
             Property(x => x.PasswordSalt).HasColumnName(@"password_salt").HasColumnType("varbinary").IsRequired().HasMaxLength(16);
-            Property(x => x.RequestedRole).HasColumnName(@"requested_role").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
-            Property(x => x.RequestedManager).HasColumnName(@"requested_manager").HasColumnType("int").IsOptional();
             Property(x => x.Status).HasColumnName(@"status").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
             Property(x => x.CreatedAt).HasColumnName(@"created_at").HasColumnType("datetime2").IsRequired();
             Property(x => x.ReviewedBy).HasColumnName(@"reviewed_by").HasColumnType("int").IsOptional();
@@ -37,8 +36,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
             Property(x => x.ReviewNote).HasColumnName(@"review_note").HasColumnType("nvarchar").IsOptional().HasMaxLength(400);
 
             // Foreign keys
-            HasOptional(a => a.User_RequestedManager).WithMany(b => b.UserRegistrationRequest_RequestedManager).HasForeignKey(c => c.RequestedManager).WillCascadeOnDelete(false); // FK_urr_requested_manager
-            HasOptional(a => a.User_ReviewedBy).WithMany(b => b.UserRegistrationRequest_ReviewedBy).HasForeignKey(c => c.ReviewedBy).WillCascadeOnDelete(false); // FK_urr_reviewed_by
+            HasOptional(a => a.User).WithMany(b => b.UserRegistrationRequest).HasForeignKey(c => c.ReviewedBy).WillCascadeOnDelete(false); // FK_urr_reviewed_by
         }
     }
 

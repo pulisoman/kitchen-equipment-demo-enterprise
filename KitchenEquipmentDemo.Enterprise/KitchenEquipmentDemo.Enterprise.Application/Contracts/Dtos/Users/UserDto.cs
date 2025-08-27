@@ -13,5 +13,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Users
         public string UserName { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string Action { get; set; }
+        public string ScreenName { get; set; }
     }
 }

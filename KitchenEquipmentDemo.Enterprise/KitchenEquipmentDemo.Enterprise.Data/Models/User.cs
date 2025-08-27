@@ -41,14 +41,9 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Models
         public virtual ICollection<Site> Site { get; set; } // site.FK_site_user
 
         /// <summary>
-        /// Child UserRegistrationRequest where [user_registration_request].[requested_manager] point to this entity (FK_urr_requested_manager)
-        /// </summary>
-        public virtual ICollection<UserRegistrationRequest> UserRegistrationRequest_RequestedManager { get; set; } // user_registration_request.FK_urr_requested_manager
-
-        /// <summary>
         /// Child UserRegistrationRequest where [user_registration_request].[reviewed_by] point to this entity (FK_urr_reviewed_by)
         /// </summary>
-        public virtual ICollection<UserRegistrationRequest> UserRegistrationRequest_ReviewedBy { get; set; } // user_registration_request.FK_urr_reviewed_by
+        public virtual ICollection<UserRegistrationRequest> UserRegistrationRequest { get; set; } // user_registration_request.FK_urr_reviewed_by
 
         public User()
         {
@@ -56,8 +51,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Models
             IsDeleted = false;
             Equipment = new List<Equipment>();
             Site = new List<Site>();
-            UserRegistrationRequest_RequestedManager = new List<UserRegistrationRequest>();
-            UserRegistrationRequest_ReviewedBy = new List<UserRegistrationRequest>();
+            UserRegistrationRequest = new List<UserRegistrationRequest>();
         }
     }
 

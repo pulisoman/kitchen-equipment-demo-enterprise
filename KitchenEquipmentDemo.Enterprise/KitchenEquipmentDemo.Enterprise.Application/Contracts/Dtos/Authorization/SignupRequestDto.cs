@@ -8,7 +8,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Authorizati
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
         public string UserName { get; set; }
-        public string PasswordPlain { get; set; }
-        public UserType RequestedRole { get; set; } // Admin (recommended)
+        public string Password { get; set; }
+        public UserType UserType { get; set; } // Admin (recommended)
     }
 }

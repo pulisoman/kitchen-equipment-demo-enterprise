@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common;
-using KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Users;
+using KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.UserRegistrations.KitchenEquipmentDemo.Enterprise.WPF.Dtos;
 using KitchenEquipmentDemo.Enterprise.Application.Contracts.Services;
 using KitchenEquipmentDemo.Enterprise.Data.Models;
 using KitchenEquipmentDemo.Enterprise.WPF.Commands;
@@ -16,9 +16,9 @@ using KitchenEquipmentDemo.Enterprise.WPF.ViewModels.Base;
 
 namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
 {
-    public class UsersViewModel : ViewModelBase, INotifyPropertyChanged
+    public class UserRegistrationsViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        private readonly IUserService _mainService;
+        private readonly IUserRegistrationService _mainService;
         private readonly AuthSession _session;
         private readonly INavigationService _nav;
 
@@ -27,15 +27,17 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
         private string _queryText;
         private int _pageSize;
         private string _sortBy;
-        private ObservableCollection<UserDto> _users;
+        private string _status;
+        private ObservableCollection<UserRegistrationDto> _requests;
         private ObservableCollection<int> _pageSizeOptions;
         private ObservableCollection<string> _sortFields;
+        private ObservableCollection<string> _statusFields;
         private int _currentPage = 1;
         private int _total;
         private int _totalPages;
-        private UserDto _selectedUser;
+        private UserRegistrationDto _selectedRequest;
 
-        public UsersViewModel(IUserService mainService, AuthSession session, INavigationService navigationService)
+        public UserRegistrationsViewModel(IUserRegistrationService mainService, AuthSession session, INavigationService navigationService)
         {
             _mainService = mainService;
             _session = session;
@@ -45,8 +47,8 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             SearchCommand = new AsyncRelayCommand(SearchAsync, () => !IsBusy);
             NextPageCommand = new AsyncRelayCommand(NextPageAsync, () => !IsBusy && HasNextPage);
             PreviousPageCommand = new AsyncRelayCommand(PreviousPageAsync, () => !IsBusy && HasPreviousPage);
-            EditCommand = new RelayCommand<UserDto>(Edit, (user) => !IsBusy && user != null);
-            DeleteCommand = new AsyncRelayCommand<UserDto>(DeleteAsync, (user) => !IsBusy && user != null);
+            ApproveCommand = new AsyncRelayCommand<UserRegistrationDto>(ApproveAsync, (request) => !IsBusy && request != null);
+            RejectCommand = new AsyncRelayCommand<UserRegistrationDto>(RejectAsync, (request) => !IsBusy && request != null);
 
             // Initialize collections
             IsBusy = true;
@@ -57,24 +59,35 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
 
         private void InitializeCollections()
         {
-            ScreenName = "Users Management";
+            ScreenName = "User Registration Requests";
             // Page size options
             PageSizeOptions = new ObservableCollection<int> { 10, 25, 50, 100 };
 
-            // Sort fields - adjust based on your UserDto properties
+            // Sort fields - adjust based on your UserRegistrationRequestDto properties
             SortFields = new ObservableCollection<string>
             {
-                "UserId",
+                "RequestId",
                 "UserName",
                 "FirstName",
                 "LastName",
-                "EmailAddress"
+                "EmailAddress",
+                "CreatedAt",
+                "Status"
+            };
+
+            StatusFields = new ObservableCollection<string>
+            {
+                "All",
+                "Pending",
+                "Approved",
+                "Denied",
             };
 
             // Default values
             PageSize = 25;
-            SortBy = "UserId";
-            Users = new ObservableCollection<UserDto>();
+            SortBy = "RequestId";
+            Status = "Pending";
+            Requests = new ObservableCollection<UserRegistrationDto>();
         }
 
         public string ScreenName
@@ -110,6 +123,18 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             }
         }
 
+        public string Status
+        {
+            get => _status;
+            set
+            {
+                _status = value;
+                OnPropertyChanged(nameof(Status));
+                // Refresh data when sort field changes
+                _ = SearchAsync();
+            }
+        }
+
         public string SortBy
         {
             get => _sortBy;
@@ -122,13 +147,13 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             }
         }
 
-        public ObservableCollection<UserDto> Users
+        public ObservableCollection<UserRegistrationDto> Requests
         {
-            get => _users;
+            get => _requests;
             set
             {
-                _users = value;
-                OnPropertyChanged(nameof(Users));
+                _requests = value;
+                OnPropertyChanged(nameof(Requests));
             }
         }
 
@@ -139,6 +164,16 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             {
                 _pageSizeOptions = value;
                 OnPropertyChanged(nameof(PageSizeOptions));
+            }
+        }
+
+        public ObservableCollection<string> StatusFields
+        {
+            get => _statusFields;
+            set
+            {
+                _statusFields = value;
+                OnPropertyChanged(nameof(StatusFields));
             }
         }
 
@@ -197,18 +232,18 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
                 (SearchCommand as AsyncRelayCommand)?.RaiseCanExecuteChanged();
                 (NextPageCommand as AsyncRelayCommand)?.RaiseCanExecuteChanged();
                 (PreviousPageCommand as AsyncRelayCommand)?.RaiseCanExecuteChanged();
-                (EditCommand as RelayCommand<UserDto>)?.RaiseCanExecuteChanged();
-                (DeleteCommand as AsyncRelayCommand<UserDto>)?.RaiseCanExecuteChanged();
+                (ApproveCommand as AsyncRelayCommand<UserRegistrationDto>)?.RaiseCanExecuteChanged();
+                (RejectCommand as AsyncRelayCommand<UserRegistrationDto>)?.RaiseCanExecuteChanged();
             }
         }
 
-        public UserDto SelectedUser
+        public UserRegistrationDto SelectedRequest
         {
-            get => _selectedUser;
+            get => _selectedRequest;
             set
             {
-                _selectedUser = value;
-                OnPropertyChanged(nameof(SelectedUser));
+                _selectedRequest = value;
+                OnPropertyChanged(nameof(SelectedRequest));
             }
         }
 
@@ -219,8 +254,8 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
         public ICommand SearchCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand PreviousPageCommand { get; }
-        public ICommand EditCommand { get; }
-        public ICommand DeleteCommand { get; }
+        public ICommand ApproveCommand { get; }
+        public ICommand RejectCommand { get; }
 
         // Methods
         private async Task SearchAsync()
@@ -230,30 +265,31 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             {
                 IsBusy = true;
 
-                // Call the user service to get paged users
                 var result = await _mainService.GetPagedAsync(
                     page: CurrentPage,
                     pageSize: PageSize,
                     searchString: QueryText,
-                    showDeletedOnly: false, 
+                    status: Status,
                     actorUserId: _session.UserId,
                     orderBy: SortBy
                 );
 
-                // Update the users collection
-                Users = new ObservableCollection<UserDto>(result.Items);
+                // Update the requests collection
+                Requests = new ObservableCollection<UserRegistrationDto>(result.Items);
                 Total = result.Total;
                 TotalPages = result.TotalPages;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error searching users: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error searching registration requests: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
                 IsBusy = false;
             }
         }
+
+       
 
         private async Task NextPageAsync()
         {
@@ -267,16 +303,10 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             await SearchAsync();
         }
 
-        private void Edit(UserDto user)
+        private async Task ApproveAsync(UserRegistrationDto request)
         {
-            user.ScreenName = "Edit User";
-            _nav.Navigate<UserFormViewModel>(user);
-        }
-
-        private async Task DeleteAsync(UserDto user)
-        {
-            var result = MessageBox.Show($"Are you sure you want to delete user: {user.UserName}?",
-                                        "Confirm Delete",
+            var result = MessageBox.Show($"Are you sure you want to approve registration request for: {request.UserName}?",
+                                        "Confirm Approval",
                                         MessageBoxButton.YesNo,
                                         MessageBoxImage.Question);
 
@@ -285,15 +315,44 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
                 try
                 {
                     IsBusy = true;
-                    //Call your service to delete the user
-                    await _mainService.DeleteAsync(user.UserId, _session.UserId);
+                    // Call your service to approve the request
+                    await _mainService.ApproveAsync(request.RequestId, _session.UserId);
                     IsBusy = false;
                     await SearchAsync(); // Refresh the list
-                    MessageBox.Show("User deleted successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Registration request approved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error deleting user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Error approving request: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
+            }
+        }
+
+        private async Task RejectAsync(UserRegistrationDto request)
+        {
+            var result = MessageBox.Show($"Are you sure you want to reject registration request for: {request.UserName}?",
+                                        "Confirm Rejection",
+                                        MessageBoxButton.YesNo,
+                                        MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    IsBusy = true;
+                    // Call your service to reject the request
+                    await _mainService.DenyAsync(request.RequestId, _session.UserId, "Rejected by administrator");
+                    IsBusy = false;
+                    await SearchAsync(); // Refresh the list
+                    MessageBox.Show("Registration request rejected successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error rejecting request: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 finally
                 {
@@ -316,4 +375,7 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
+
+    // DTO for UserRegistrationRequest (you might need to create this in your contracts)
+    
 }

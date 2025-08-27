@@ -30,6 +30,9 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
 
         public ICommand LoginCommand { get; }
 
+        public ICommand SignUpCommand { get; }
+
+
         public LoginViewModel(IAuthService auth, AuthSession session, INavigationService nav)
         {
             _auth = auth ?? throw new ArgumentNullException(nameof(auth));
@@ -38,10 +41,19 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
 
             LoginCommand = new AsyncRelayCommand(LoginAsync, () => !IsBusy);
 
+            SignUpCommand = new AsyncRelayCommand(SignUpAsync, () => !IsBusy);
+
             //Testing
             UserName ="norman.super";
             Password = "Duke!N0rm@n#2025$KE";
         }
+
+        private async Task SignUpAsync()
+        {
+            //navigate to user registration view
+            _nav.Navigate<UserRegistrationViewModel>();
+        }
+
 
         private async Task LoginAsync()
         {
@@ -88,7 +100,7 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
                     {
                         _session.Permissions.Add(AppPermission.ManageUsers);
                         _session.Permissions.Add(AppPermission.ManageSignUpRequests);
-                        _session.Permissions.Add(AppPermission.ManageEquipmentActivity);
+                        //_session.Permissions.Add(AppPermission.ManageEquipmentActivity);
                     }
                     _session.Permissions.Add(AppPermission.ManageProfile);
                     _session.Permissions.Add(AppPermission.ManageDashboard);

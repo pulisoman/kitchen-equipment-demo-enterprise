@@ -27,6 +27,14 @@
                 <views:UserFormView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type vm:UserRegistrationViewModel}">
+                <views:UserRegistrationView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:UserRegistrationsViewModel}">
+                <views:UserRegistrationsView/>
+            </DataTemplate>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

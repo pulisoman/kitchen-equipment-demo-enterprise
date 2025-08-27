@@ -16,10 +16,9 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Models
         public string LastName { get; set; } // last_name (length: 100)
         public string EmailAddress { get; set; } // email_address (length: 256)
         public string UserName { get; set; } // user_name (length: 100)
+        public string UserType { get; set; } // user_type (length: 20)
         public byte[] PasswordHash { get; set; } // password_hash (length: 64)
         public byte[] PasswordSalt { get; set; } // password_salt (length: 16)
-        public string RequestedRole { get; set; } // requested_role (length: 20)
-        public int? RequestedManager { get; set; } // requested_manager
         public string Status { get; set; } // status (length: 20)
         public DateTime CreatedAt { get; set; } // created_at
         public int? ReviewedBy { get; set; } // reviewed_by
@@ -29,14 +28,9 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Models
         // Foreign keys
 
         /// <summary>
-        /// Parent User pointed by [user_registration_request].([RequestedManager]) (FK_urr_requested_manager)
-        /// </summary>
-        public virtual User User_RequestedManager { get; set; } // FK_urr_requested_manager
-
-        /// <summary>
         /// Parent User pointed by [user_registration_request].([ReviewedBy]) (FK_urr_reviewed_by)
         /// </summary>
-        public virtual User User_ReviewedBy { get; set; } // FK_urr_reviewed_by
+        public virtual User User { get; set; } // FK_urr_reviewed_by
 
         public UserRegistrationRequest()
         {

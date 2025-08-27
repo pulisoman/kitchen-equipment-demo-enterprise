@@ -37,11 +37,13 @@ namespace KitchenEquipmentDemo.Enterprise.WPF
             sc.AddScoped<AppDbContext>();   // uses connection string from App.config
             sc.AddScoped<UnitOfWork>();
             sc.AddScoped<UserRepository>();
+            sc.AddScoped<UserRegistrationRequestRepository>();
 
             // ---------- Application services ----------
             sc.AddScoped<IAuthService, AuthService>();
             // ✅ Add this to Application services section
             sc.AddScoped<IUserService, UserService>();
+            sc.AddScoped<IUserRegistrationService, UserRegistrationService>();
 
 
             // ---------- ViewModels in use now ----------
@@ -50,6 +52,8 @@ namespace KitchenEquipmentDemo.Enterprise.WPF
             sc.AddTransient<DashboardViewModel>();
             sc.AddTransient<UsersViewModel>();
             sc.AddTransient<UserFormViewModel>();
+            sc.AddTransient<UserRegistrationViewModel>();
+            sc.AddTransient<UserRegistrationsViewModel>();
 
             // ---------- Windows ----------
             sc.AddTransient<MainWindow>();

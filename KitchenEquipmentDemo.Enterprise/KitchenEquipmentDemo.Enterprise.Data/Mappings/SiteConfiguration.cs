@@ -22,7 +22,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
             HasKey(x => x.SiteId);
 
             Property(x => x.SiteId).HasColumnName(@"site_id").HasColumnType("int").IsRequired().HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
+            Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsOptional();
             Property(x => x.Code).HasColumnName(@"code").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
             Property(x => x.Name).HasColumnName(@"name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
             Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar").IsOptional().HasMaxLength(200);
@@ -35,7 +35,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
             Property(x => x.RowVersion).HasColumnName(@"row_version").HasColumnType("timestamp").IsRequired().IsFixedLength().HasMaxLength(8).IsRowVersion().IsConcurrencyToken();
 
             // Foreign keys
-            HasRequired(a => a.User).WithMany(b => b.Site).HasForeignKey(c => c.UserId).WillCascadeOnDelete(false); // FK_site_user
+            HasOptional(a => a.User).WithMany(b => b.Site).HasForeignKey(c => c.UserId).WillCascadeOnDelete(false); // FK_site_user
         }
     }
 

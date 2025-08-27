@@ -310,16 +310,19 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
             if (isEmailTaken)
                 return OperationResult.Fail("Email address is already taken.");
 
+            if(IsValidEmail(dto.EmailAddress) == false)
+                return OperationResult.Fail("Email address is not valid.");
+
             // Fetch the user from repository or DB
             var user = await _userRepo.GetByIdAsync(dto.UserId);
             if (user == null || user.IsDeleted)
                 return OperationResult.Fail("User not found.");
 
             //pass the dto values to user object
-            user.FirstName = dto.FirstName;
-            user.LastName = dto.LastName;
-            user.EmailAddress = dto.EmailAddress;
-            user.UserName = dto.UserName;
+            user.FirstName = dto.FirstName.Trim();
+            user.LastName = dto.LastName.Trim();
+            user.EmailAddress = dto.EmailAddress.Trim();
+            user.UserName = dto.UserName.Trim();
             user.UserType = dto.UserType.ToString();
             user.UpdatedBy = actorUserId;
             user.UpdatedAt = DateTime.UtcNow;
@@ -328,6 +331,19 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
 
             await _uow.SaveChangesAsync();
             return OperationResult.Success("User info updated successfully.");
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
     }

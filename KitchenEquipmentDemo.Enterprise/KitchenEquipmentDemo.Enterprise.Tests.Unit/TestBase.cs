@@ -28,7 +28,7 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
 
         // Services
         protected AuthService AuthSvc;
-        protected RegistrationService RegSvc;
+        protected UserRegistrationService RegSvc;
         protected SiteService SiteSvc;
         protected EquipmentService EquipmentSvc;
         protected UserService UserSvc;
@@ -50,7 +50,7 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
             UrrRepo = new UserRegistrationRequestRepository(Db);
 
             AuthSvc = new AuthService(UserRepo, Uow);
-            RegSvc = new RegistrationService(UrrRepo, UserRepo, Uow);
+            RegSvc = new UserRegistrationService(UrrRepo, UserRepo, Uow);
             SiteSvc = new SiteService(SiteRepo, EquipmentRepo, HistoryRepo, Uow);
             EquipmentSvc = new EquipmentService(EquipmentRepo, UserRepo, SiteRepo, HistoryRepo, Uow);
             UserSvc = new UserService(UserRepo, Uow);

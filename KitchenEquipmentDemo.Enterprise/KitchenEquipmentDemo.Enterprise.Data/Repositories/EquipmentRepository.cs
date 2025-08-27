@@ -53,7 +53,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Repositories
             return q.AnyAsync();
         }
 
-        public Task<bool> SerialExistsForUserAsync(int userId, string serial, int? excludeEquipmentId = null)
+        public Task<bool> SerialExistsForUserAsync(int? userId, string serial, int? excludeEquipmentId = null)
         {
             if (excludeEquipmentId.HasValue)
             {

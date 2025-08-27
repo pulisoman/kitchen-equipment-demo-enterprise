@@ -10,6 +10,7 @@ using KitchenEquipmentDemo.Enterprise.WPF.Commands;
 using KitchenEquipmentDemo.Enterprise.WPF.Models;
 using KitchenEquipmentDemo.Enterprise.WPF.Services.Navigation;
 using KitchenEquipmentDemo.Enterprise.WPF.ViewModels.Base;
+using KitchenEquipmentDemo.Enterprise.WPF.Views;
 
 namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
 {
@@ -49,7 +50,7 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             GoProfileCommand = new AsyncRelayCommand( () => EditProfileAsync(Session.UserId), () => !IsBusy);
             GoSitesCommand = new RelayCommand(() => { Navigation.Navigate<DashboardViewModel>(); Session.SelectedNavItem = NavItem.Sites; });
             GoEquipmentsCommand = new RelayCommand(() => { Navigation.Navigate<DashboardViewModel>(); Session.SelectedNavItem = NavItem.Equipments; });
-
+            GoSignUpRequestsCommand = new RelayCommand(() => { Navigation.Navigate<UserRegistrationsViewModel>(); Session.SelectedNavItem = NavItem.SignUpRequests; });
             LogoutCommand = new RelayCommand(Logout);
         }
 
@@ -67,6 +68,8 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
                 {
                     Session.SelectedNavItem = NavItem.Profile;
                     Navigation.Navigate(null);
+                    result.Data.Action = "Edit";
+                    result.Data.ScreenName = "Edit Profile";
                     Navigation.Navigate<UserFormViewModel>(result.Data);
                 }
                 else

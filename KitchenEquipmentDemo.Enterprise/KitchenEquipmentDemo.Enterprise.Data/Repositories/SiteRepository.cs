@@ -78,7 +78,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Repositories
         }
 
         /// <summary>Name unique per user, excluding a specific site.</summary>
-        public Task<bool> NameExistsExceptAsync(int userId, string name, int excludeSiteId)
+        public Task<bool> NameExistsExceptAsync(int? userId, string name, int excludeSiteId)
         {
             var q =
                 from s in _set

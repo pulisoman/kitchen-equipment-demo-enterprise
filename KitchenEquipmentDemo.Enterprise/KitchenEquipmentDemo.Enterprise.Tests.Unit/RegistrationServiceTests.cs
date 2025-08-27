@@ -18,8 +18,8 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
                 LastName = "Tester",
                 EmailAddress = RandToken("alice")+"@example.local",
                 UserName = "alice_"+ RandToken("u"),
-                PasswordPlain = "P@ssw0rd!",
-                RequestedRole = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
+                Password = "P@ssw0rd!",
+                UserType = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
             };
 
             var req = await RegSvc.RequestSignupAsync(signup);
@@ -33,7 +33,7 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
             Assert.IsTrue(approve.Succeeded, string.Join("; ", approve.Errors));
 
             // Now login should succeed
-            var login = await AuthSvc.LoginAsync(new LoginRequestDto { UserName = signup.UserName, Password = signup.PasswordPlain });
+            var login = await AuthSvc.LoginAsync(new LoginRequestDto { UserName = signup.UserName, Password = signup.Password });
             Assert.IsTrue(login.Succeeded);
             Assert.IsTrue(login.Data.Success);
         }
@@ -51,8 +51,8 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
                 LastName = "T",
                 EmailAddress = email,
                 UserName = uname,
-                PasswordPlain = "P@ssw0rd!",
-                RequestedRole = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
+                Password = "P@ssw0rd!",
+                UserType = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
             });
             Assert.IsTrue(req1.Succeeded, string.Join("; ", req1.Errors));
 
@@ -63,8 +63,8 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
                 LastName = "User",
                 EmailAddress = email,
                 UserName = "x_"+RandToken("u"),
-                PasswordPlain = "P@ssw0rd!",
-                RequestedRole = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
+                Password = "P@ssw0rd!",
+                UserType = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
             });
             Assert.IsFalse(req2.Succeeded, "Expected duplicate pending request to be blocked.");
         }
@@ -80,8 +80,8 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
                 LastName = "T",
                 EmailAddress = RandToken("c")+"@example.local",
                 UserName = "c_"+RandToken("u"),
-                PasswordPlain = "P@ssw0rd!",
-                RequestedRole = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
+                Password = "P@ssw0rd!",
+                UserType = KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Common.UserType.Admin
             });
             Assert.IsTrue(req.Succeeded);
 

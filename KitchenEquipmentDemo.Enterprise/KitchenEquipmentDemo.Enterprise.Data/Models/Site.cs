@@ -12,7 +12,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Models
     public class Site
     {
         public int SiteId { get; set; } // site_id (Primary key)
-        public int UserId { get; set; } // user_id
+        public int? UserId { get; set; } // user_id
         public string Code { get; set; } // code (length: 100)
         public string Name { get; set; } // name (length: 100)
         public string Description { get; set; } // description (length: 200)

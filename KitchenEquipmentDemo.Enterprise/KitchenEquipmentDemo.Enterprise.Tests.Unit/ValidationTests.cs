@@ -21,7 +21,7 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
         public void Signup_Validator_Flags_Missing()
         {
             var v = new SignupRequestValidator();
-            var errs = v.Validate(new SignupRequestDto { FirstName = "", LastName = "", EmailAddress = "x", UserName = "", PasswordPlain = "" });
+            var errs = v.Validate(new SignupRequestDto { FirstName = "", LastName = "", EmailAddress = "x", UserName = "", Password = "" });
             Assert.IsTrue(errs.Count >= 4);
         }
 

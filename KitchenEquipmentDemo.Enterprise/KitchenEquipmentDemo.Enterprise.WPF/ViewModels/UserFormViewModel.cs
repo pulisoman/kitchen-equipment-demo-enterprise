@@ -25,7 +25,6 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
         private readonly AuthSession _session;
         private readonly INavigationService _nav;
         private readonly UserDto _userToUpdate;
-
         public string ScreenName { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
@@ -59,18 +58,23 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             InitializeCollections();
             IsBusy = false;
             _ = LoadUserDataAsync(_userToUpdate.UserId);
-            ScreenName = "User Form";
+            ScreenName = string.IsNullOrWhiteSpace(_userToUpdate.ScreenName) ? "User Form" : _userToUpdate.ScreenName;
         }
 
         private void InitializeCollections()
         {
             ScreenName = "Users Management";
 
-            UserTypes = new ObservableCollection<UserType>
+            UserTypes = new ObservableCollection<UserType>()
             {
                 UserType.Admin,
                 UserType.SuperAdmin
             };
+
+            if (!_session.UserType.Equals(UserType.SuperAdmin.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                UserTypes.Remove(UserType.SuperAdmin);
+            }
         }
 
         //create LoadUserDataAsync method

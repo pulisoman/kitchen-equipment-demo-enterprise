@@ -18,7 +18,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Validation
             errors.Required(instance.LastName, "Last name");
             errors.Required(instance.EmailAddress, "Email");
             errors.Required(instance.UserName, "Username");
-            errors.Required(instance.PasswordPlain, "Password");
+            errors.Required(instance.Password, "Password");
 
             errors.MaxLen(instance.FirstName, 100, "First name");
             errors.MaxLen(instance.LastName, 100, "Last name");

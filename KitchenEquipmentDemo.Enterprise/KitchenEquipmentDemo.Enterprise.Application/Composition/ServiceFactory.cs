@@ -25,7 +25,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Composition
 
         // Services (lazy)
         private IAuthService _authService;
-        private IRegistrationService _registrationService;
+        private IUserRegistrationService _registrationService;
         private ISiteService _siteService;
         private IEquipmentService _equipmentService;
         private IUserService _userService;
@@ -60,8 +60,8 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Composition
         public IAuthService Auth()
             => _authService ?? (_authService = new AuthService(_userRepo, _uow));
 
-        public IRegistrationService Registration()
-            => _registrationService ?? (_registrationService = new RegistrationService(_urrRepo, _userRepo, _uow));
+        public IUserRegistrationService Registration()
+            => _registrationService ?? (_registrationService = new UserRegistrationService(_urrRepo, _userRepo, _uow));
 
         public ISiteService Sites()
             => _siteService ?? (_siteService = new SiteService(_siteRepo, _equipmentRepo, _historyRepo, _uow));

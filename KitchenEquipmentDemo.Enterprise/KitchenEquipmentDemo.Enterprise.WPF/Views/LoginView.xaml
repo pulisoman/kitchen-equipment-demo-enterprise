@@ -24,7 +24,7 @@
                         <TextBlock Text="Duke Kitchen Equipment" 
                        FontSize="18" FontWeight="SemiBold"
                        Foreground="{StaticResource Brush.Text}"/>
-                        <TextBlock Text="Sign in to continue"
+                        <TextBlock Text="Log in to continue"
                        Foreground="{StaticResource Brush.Text}"
                        Opacity="0.8"/>
                     </StackPanel>
@@ -45,14 +45,22 @@
                 </StackPanel>
 
                 <!-- Actions -->
-                <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                <DockPanel Margin="0,16,0,0" LastChildFill="False">
+                    <!-- SignUp on left -->
+                    <Button Content="SignUp"
+            Command="{Binding SignUpCommand}"
+            Style="{StaticResource BtnAccent}"
+            Width="120"
+            DockPanel.Dock="Left"/>
+
+                    <!-- Login on right -->
                     <Button Content="Login"
-        Command="{Binding LoginCommand}"
-        Style="{StaticResource BtnAccent}"
-        Width="120"
-        IsDefault="True"/>
-                    <!-- You can add a "Cancel" or "Back" button here if desired -->
-                </StackPanel>
+            Command="{Binding LoginCommand}"
+            Style="{StaticResource BtnAccent}"
+            Width="120"
+            DockPanel.Dock="Right"
+            IsDefault="True"/>
+                </DockPanel>
 
                 <!-- Message -->
                 <TextBlock Text="{Binding Message}"

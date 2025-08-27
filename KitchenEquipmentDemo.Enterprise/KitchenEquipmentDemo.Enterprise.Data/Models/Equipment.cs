@@ -20,7 +20,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Models
         public string Name { get; set; } // name (length: 100)
         public string Description { get; set; } // description (length: 200)
         public string Condition { get; set; } // condition (length: 20)
-        public int UserId { get; set; } // user_id
+        public int? UserId { get; set; } // user_id
         public int? SiteId { get; set; } // site_id
         public DateTime CreatedAt { get; set; } // created_at
         public int? CreatedBy { get; set; } // created_by

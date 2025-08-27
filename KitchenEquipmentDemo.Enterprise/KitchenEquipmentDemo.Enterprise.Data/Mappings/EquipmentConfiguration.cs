@@ -30,7 +30,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
             Property(x => x.Name).HasColumnName(@"name").HasColumnType("nvarchar").IsOptional().HasMaxLength(100);
             Property(x => x.Description).HasColumnName(@"description").HasColumnType("nvarchar").IsOptional().HasMaxLength(200);
             Property(x => x.Condition).HasColumnName(@"condition").HasColumnType("varchar").IsRequired().IsUnicode(false).HasMaxLength(20);
-            Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsRequired();
+            Property(x => x.UserId).HasColumnName(@"user_id").HasColumnType("int").IsOptional();
             Property(x => x.SiteId).HasColumnName(@"site_id").HasColumnType("int").IsOptional();
             Property(x => x.CreatedAt).HasColumnName(@"created_at").HasColumnType("datetime2").IsRequired();
             Property(x => x.CreatedBy).HasColumnName(@"created_by").HasColumnType("int").IsOptional();
@@ -41,7 +41,7 @@ namespace KitchenEquipmentDemo.Enterprise.Data.Mappings
 
             // Foreign keys
             HasOptional(a => a.Site).WithMany(b => b.Equipment).HasForeignKey(c => c.SiteId).WillCascadeOnDelete(false); // FK_equipment_site
-            HasRequired(a => a.User).WithMany(b => b.Equipment).HasForeignKey(c => c.UserId).WillCascadeOnDelete(false); // FK_equipment_user
+            HasOptional(a => a.User).WithMany(b => b.Equipment).HasForeignKey(c => c.UserId).WillCascadeOnDelete(false); // FK_equipment_user
         }
     }
 
