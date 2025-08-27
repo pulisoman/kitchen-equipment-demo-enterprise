@@ -51,9 +51,9 @@ namespace KitchenEquipmentDemo.Enterprise.Tests.Unit
 
             AuthSvc = new AuthService(UserRepo, Uow);
             RegSvc = new UserRegistrationService(UrrRepo, UserRepo, Uow);
-            SiteSvc = new SiteService(SiteRepo, EquipmentRepo, HistoryRepo, Uow);
+            SiteSvc = new SiteService(UserRepo,SiteRepo, EquipmentRepo, HistoryRepo, Uow);
             EquipmentSvc = new EquipmentService(EquipmentRepo, UserRepo, SiteRepo, HistoryRepo, Uow);
-            UserSvc = new UserService(UserRepo, Uow);
+            UserSvc = new UserService(UserRepo, SiteRepo, EquipmentRepo, Uow);
         }
 
         [TestCleanup]

@@ -14,16 +14,19 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
     public class SiteService : ISiteService
     {
         private readonly SiteRepository _siteRepo;
+        private readonly UserRepository _userRepo;
         private readonly EquipmentRepository _equipmentRepo;
         private readonly SiteEquipmentHistoryRepository _historyRepo;
         private readonly UnitOfWork _uow;
 
         public SiteService(
+            UserRepository userRepo,
             SiteRepository siteRepo,
             EquipmentRepository equipmentRepo,
             SiteEquipmentHistoryRepository historyRepo,
             UnitOfWork uow)
         {
+            _userRepo = userRepo;
             _siteRepo = siteRepo;
             _equipmentRepo = equipmentRepo;
             _historyRepo = historyRepo;
@@ -250,6 +253,123 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
             return s;
         }
 
+        //private static SiteDto Map(Site s) => new SiteDto
+        //{
+        //    SiteId = s.SiteId,
+        //    UserId = s.UserId,
+        //    Code = s.Code,
+        //    Name = s.Name,
+        //    Description = s.Description,
+        //    Active = s.Active,
+        //    UpdatedAt = s.UpdatedAt
+        //};
+
+        public async Task<PagedResult<SiteDto>> GetPagedAsync(
+    int page,
+    int pageSize,
+    string searchString,
+    bool? activeStatus, // Filter by active status
+    int? ownerId, // Filter by owner/user
+    int actorUserId,
+    string orderBy = "SiteId",
+    bool orderByDescending = false)
+        {
+            var actor = await _userRepo.GetByIdAsync(actorUserId);
+            if (actor == null || actor.IsDeleted)
+                return new PagedResult<SiteDto> { Page = page, PageSize = pageSize, Total = 0, Items = new List<SiteDto>() };
+
+            var all = await _siteRepo.GetAllAsync();
+
+            // Filter out deleted sites
+            IEnumerable<Site> query = all.Where(s => !s.IsDeleted);
+
+            // Filter by active status if specified
+            if (activeStatus.HasValue)
+            {
+                query = query.Where(s => s.Active == activeStatus.Value);
+            }
+
+            // Filter by owner if specified
+            if (ownerId.HasValue && ownerId.Value > 0)
+            {
+                query = query.Where(s => s.UserId == ownerId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var s = searchString.Trim();
+
+                query = query.Where(site =>
+                    site.SiteId.ToString().Contains(s) ||
+                    (site.Code ?? "").Contains(s) ||
+                    (site.Name ?? "").Contains(s) ||
+                    (site.Description ?? "").Contains(s));
+            }
+
+            var orderedQuery = query;
+            switch (orderBy)
+            {
+                case nameof(Site.Code):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.Code) : query.OrderBy(s => s.Code);
+                    break;
+                case nameof(Site.Name):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.Name) : query.OrderBy(s => s.Name);
+                    break;
+                case nameof(Site.Description):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.Description) : query.OrderBy(s => s.Description);
+                    break;
+                case nameof(Site.Active):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.Active) : query.OrderBy(s => s.Active);
+                    break;
+                case nameof(Site.UserId):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.UserId) : query.OrderBy(s => s.UserId);
+                    break;
+                case nameof(Site.CreatedAt):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.CreatedAt) : query.OrderBy(s => s.CreatedAt);
+                    break;
+                case nameof(Site.UpdatedAt):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.UpdatedAt) : query.OrderBy(s => s.UpdatedAt);
+                    break;
+                case nameof(Site.SiteId):
+                default:
+                    orderedQuery = orderByDescending ? query.OrderByDescending(s => s.SiteId) : query.OrderBy(s => s.SiteId);
+                    break;
+            }
+
+            var total = orderedQuery.Count();
+
+            if (total == 0)
+            {
+                return new PagedResult<SiteDto>
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    Total = total,
+                    TotalPages = 1,
+                    Items = new List<SiteDto>()
+                };
+            }
+
+            var totalPages = (int)Math.Ceiling(total / (double)pageSize);
+            if (totalPages == 0) totalPages = 1;
+            if (page > totalPages) page = totalPages;
+
+            var items = orderedQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(Map)
+                .ToList();
+
+            return new PagedResult<SiteDto>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Total = total,
+                TotalPages = totalPages,
+                Items = items
+            };
+        }
+
         private static SiteDto Map(Site s) => new SiteDto
         {
             SiteId = s.SiteId,
@@ -258,6 +378,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
             Name = s.Name,
             Description = s.Description,
             Active = s.Active,
+            CreatedAt = s.CreatedAt,
             UpdatedAt = s.UpdatedAt
         };
     }

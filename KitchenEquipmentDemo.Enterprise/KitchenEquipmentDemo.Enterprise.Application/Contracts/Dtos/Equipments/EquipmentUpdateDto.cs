@@ -6,7 +6,9 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Equipments
     {
         public int EquipmentId { get; set; }
         public int? UserId { get; set; }
-
+        public string Code { get; set; }
+        public bool Active { get; set; }
+        public string Name { get; set; }
         public int? SiteId { get; set; }
         public string SerialNumber { get; set; }
         public string Description { get; set; }

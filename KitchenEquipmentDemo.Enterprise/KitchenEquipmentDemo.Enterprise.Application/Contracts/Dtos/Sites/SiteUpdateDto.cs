@@ -2,6 +2,7 @@
 {
     public class SiteUpdateDto
     {
+        public int UserId { get; set; }
         public int SiteId { get; set; }
         public string Code { get; set; }        // keep if you allow code edits; else ignore in service
         public string Name { get; set; }

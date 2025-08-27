@@ -11,6 +11,8 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Contracts.Dtos.Sites
         public string Description { get; set; }
         public bool Active { get; set; }
         public DateTime? CreatedAt { get; set; }  // for UI
-        public DateTime? UpdatedAt { get; set; }  
+        public DateTime? UpdatedAt { get; set; }
+        public string Action { get; set; }
+        public string ScreenName { get; set; }
     }
 }

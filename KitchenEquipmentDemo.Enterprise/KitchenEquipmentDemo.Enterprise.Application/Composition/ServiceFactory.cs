@@ -64,13 +64,13 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Composition
             => _registrationService ?? (_registrationService = new UserRegistrationService(_urrRepo, _userRepo, _uow));
 
         public ISiteService Sites()
-            => _siteService ?? (_siteService = new SiteService(_siteRepo, _equipmentRepo, _historyRepo, _uow));
+            => _siteService ?? (_siteService = new SiteService(_userRepo, _siteRepo, _equipmentRepo, _historyRepo, _uow));
 
         public IEquipmentService Equipments()
             => _equipmentService ?? (_equipmentService = new EquipmentService(_equipmentRepo, _userRepo, _siteRepo, _historyRepo, _uow));
 
         public IUserService Users()
-            => _userService ?? (_userService = new UserService(_userRepo, _uow));
+            => _userService ?? (_userService = new UserService(_userRepo, _siteRepo, _equipmentRepo, _uow));
 
         public void Dispose()
         {

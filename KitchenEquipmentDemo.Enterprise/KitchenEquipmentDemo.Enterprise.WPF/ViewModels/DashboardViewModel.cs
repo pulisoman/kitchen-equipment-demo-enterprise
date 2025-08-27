@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
+using KitchenEquipmentDemo.Enterprise.Application.Contracts.Services;
 using KitchenEquipmentDemo.Enterprise.WPF.Commands;
 using KitchenEquipmentDemo.Enterprise.WPF.Models;
 using KitchenEquipmentDemo.Enterprise.WPF.Services.Navigation;
@@ -10,17 +13,19 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
 {
     public class DashboardViewModel : ViewModelBase
     {
+        private readonly IUserService _userService;
         private readonly AuthSession _session;
         private readonly INavigationService _navigation;
 
+        public bool IsBusy { get; set; }
         public AuthSession Session => _session;
         public ObservableCollection<DashboardTile> Tiles { get; } = new ObservableCollection<DashboardTile>();
 
-        public DashboardViewModel(AuthSession session, INavigationService navigation)
+        public DashboardViewModel(IUserService userService, AuthSession session, INavigationService navigation)
         {
             _session = session ?? throw new ArgumentNullException(nameof(session));
             _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
-
+            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             InitializeTiles();
         }
 
@@ -75,10 +80,56 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
 
             return htmlEntity; // Return original if conversion fails
         }
-        private void Select(NavItem target)
+        private async Task Select(NavItem target)
         {
             _session.SelectedNavItem = target;
-            _navigation.Navigate<UsersViewModel>();
+            if(target == NavItem.Profile )
+                 await EditProfileAsync(Session.UserId);
+            else if (target == NavItem.Dashboard)
+                _navigation.Navigate<DashboardViewModel>();
+            else if (target == NavItem.Sites)
+                _navigation.Navigate<SitesViewModel>();
+            else if (target == NavItem.Equipments)
+                _navigation.Navigate<EquipmentsViewModel>();
+            else if (target == NavItem.SignUpRequests)
+                _navigation.Navigate<UserRegistrationsViewModel>();
+            else if (target == NavItem.Users)
+                _navigation.Navigate<UsersViewModel>();
+        }
+
+        private async Task EditProfileAsync(int userId)
+        {
+            if (IsBusy) return;
+
+            IsBusy = true;
+
+            try
+            {
+                var result = await _userService.GetAsync(userId, Session.UserId);
+
+                if (result?.Data != null)
+                {
+                    Session.SelectedNavItem = NavItem.Profile;
+                    _navigation.Navigate(null);
+                    result.Data.Action = "Edit";
+                    result.Data.ScreenName = "Edit Profile";
+                    _navigation.Navigate<UserFormViewModel>(result.Data);
+                }
+                else
+                {
+                    MessageBox.Show($"User data not found", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load user: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
     }
 }

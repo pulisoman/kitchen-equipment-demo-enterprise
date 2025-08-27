@@ -18,7 +18,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Validation
                 errors.Add($"{fieldName} must be at most {max} characters.");
         }
 
-        public static void PositiveId(this List<string> errors, int id, string fieldName)
+        public static void PositiveId(this List<string> errors, int? id, string fieldName)
         {
             if (id <= 0) errors.Add($"{fieldName} must be a positive id.");
         }

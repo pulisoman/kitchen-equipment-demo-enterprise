@@ -94,6 +94,7 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
             {
                 UserId = dto.UserId,
                 SiteId = dto.SiteId,
+                Name = dto.Name?.Trim(),
                 SerialNumber = dto.SerialNumber.Trim(),
                 Description = dto.Description ?? string.Empty?.Trim(),
                 Condition = dto.Condition == EquipmentCondition.Working ? "Working" : "Not Working",
@@ -209,15 +210,117 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
             return OperationResult.Success("Equipment deleted.");
         }
 
-        // ---- helpers ----
-        private static EquipmentDto   Map(Equipment e) => new EquipmentDto
+        public async Task<PagedResult<EquipmentDto>> GetPagedAsync(
+    int page,
+    int pageSize,
+    string searchString,
+    int? ownerId, // New parameter for owner filtering
+    int actorUserId,
+    string orderBy = "EquipmentId",
+    bool orderByDescending = false)
+        {
+            var actor = await _userRepo.GetByIdAsync(actorUserId);
+            if (actor == null || actor.IsDeleted)
+                return new PagedResult<EquipmentDto> { Page = page, PageSize = pageSize, Total = 0, Items = new List<EquipmentDto>() };
+
+            var all = await _equipmentRepo.GetAllAsync();
+
+            // Filter out deleted equipment
+            IEnumerable<Equipment> query = all.Where(e => !e.IsDeleted);
+
+            // Filter by owner if specified
+            if (ownerId.HasValue && ownerId.Value > 0)
+            {
+                query = query.Where(e => e.UserId == ownerId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var s = searchString.Trim();
+
+                query = query.Where(e =>
+                    e.EquipmentId.ToString().Contains(s) ||
+                    (e.SerialNumber ?? "").Contains(s) ||
+                    (e.Description ?? "").Contains(s) ||
+                    (e.Name ?? "").Contains(s));
+            }
+
+            var orderedQuery = query;
+            switch (orderBy)
+            {
+                case nameof(Equipment.SerialNumber):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.SerialNumber) : query.OrderBy(e => e.SerialNumber);
+                    break;
+                case nameof(Equipment.Name):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.Name) : query.OrderBy(e => e.Name);
+                    break;
+                case nameof(Equipment.Description):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.Description) : query.OrderBy(e => e.Description);
+                    break;
+                case nameof(Equipment.Condition):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.Condition) : query.OrderBy(e => e.Condition);
+                    break;
+                case nameof(Equipment.SiteId):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.SiteId) : query.OrderBy(e => e.SiteId);
+                    break;
+                case nameof(Equipment.UserId):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.UserId) : query.OrderBy(e => e.UserId);
+                    break;
+                case nameof(Equipment.CreatedAt):
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.CreatedAt) : query.OrderBy(e => e.CreatedAt);
+                    break;
+                case nameof(Equipment.EquipmentId):
+                default:
+                    orderedQuery = orderByDescending ? query.OrderByDescending(e => e.EquipmentId) : query.OrderBy(e => e.EquipmentId);
+                    break;
+            }
+
+            var total = orderedQuery.Count();
+
+            if (total == 0)
+            {
+                return new PagedResult<EquipmentDto>
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    Total = total,
+                    TotalPages = 1,
+                    Items = new List<EquipmentDto>()
+                };
+            }
+
+            var totalPages = (int)Math.Ceiling(total / (double)pageSize);
+            if (totalPages == 0) totalPages = 1;
+            if (page > totalPages) page = totalPages;
+
+            var items = orderedQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(Map)
+                .ToList();
+
+            return new PagedResult<EquipmentDto>
+            {
+                Page = page,
+                PageSize = pageSize,
+                Total = total,
+                TotalPages = totalPages,
+                Items = items
+            };
+        }
+
+        private static EquipmentDto Map(Equipment e) => new EquipmentDto
         {
             EquipmentId = e.EquipmentId,
             UserId = e.UserId,
             SiteId = e.SiteId,
+            Name = e.Name,
             SerialNumber = e.SerialNumber,
             Description = e.Description,
-            Condition = e.Condition == "Working" ? EquipmentCondition.Working : EquipmentCondition.NotWorking
+            //Condition = (EquipmentCondition)Enum.Parse(typeof(EquipmentCondition), e.Condition)
+            Condition = string.Equals(e.Condition, "Working", StringComparison.OrdinalIgnoreCase) ? EquipmentCondition.Working : EquipmentCondition.NotWorking
+            //CreatedAt = e.CreatedAt,
+            //UpdatedAt = e.UpdatedAt
         };
     }
 }

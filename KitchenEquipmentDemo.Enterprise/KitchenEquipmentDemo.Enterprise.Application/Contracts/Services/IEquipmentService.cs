@@ -11,5 +11,14 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Contracts.Services
         Task<OperationResult<EquipmentDto>> CreateAsync(EquipmentCreateDto dto, int actorUserId);
         Task<OperationResult<EquipmentDto>> UpdateAsync(EquipmentUpdateDto dto, int actorUserId);
         Task<OperationResult> DeleteAsync(int equipmentId, int actorUserId); // null if skipping concurrency
+
+        Task<PagedResult<EquipmentDto>> GetPagedAsync(
+    int page,
+    int pageSize,
+    string searchString,
+    int? ownerId, // New parameter for owner filtering
+    int actorUserId,
+    string orderBy = "EquipmentId",
+    bool orderByDescending = false);
     }
 }

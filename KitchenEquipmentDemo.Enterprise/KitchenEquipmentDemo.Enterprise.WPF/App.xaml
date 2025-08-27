@@ -35,6 +35,22 @@
                 <views:UserRegistrationsView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type vm:SitesViewModel}">
+                <views:SitesView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:SiteFormViewModel}">
+                <views:SiteFormView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:EquipmentsViewModel}">
+                <views:EquipmentsView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type vm:EquipmentFormViewModel}">
+                <views:EquipmentFormView/>
+            </DataTemplate>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

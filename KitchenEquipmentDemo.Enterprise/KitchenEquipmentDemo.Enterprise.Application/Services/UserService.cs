@@ -15,11 +15,15 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
     public class UserService : IUserService
     {
         private readonly UserRepository _userRepo;
+        private readonly SiteRepository _siteRepo;
+        private readonly EquipmentRepository _equipmentRepo;
         private readonly UnitOfWork _uow;
 
-        public UserService(UserRepository userRepo, UnitOfWork uow)
+        public UserService(UserRepository userRepo, SiteRepository siteRepo, EquipmentRepository equipmentRepo,  UnitOfWork uow)
         {
             _userRepo = userRepo;
+            _siteRepo = siteRepo;
+            _equipmentRepo = equipmentRepo;
             _uow = uow;
         }
 
@@ -106,13 +110,44 @@ namespace KitchenEquipmentDemo.Enterprise.Application.Services
             if (u == null || u.IsDeleted) return OperationResult.Success("Already deleted.");
             if (IsSuperAdmin(u)) return OperationResult.Fail("Cannot delete a SuperAdmin.");
 
+            // Delete all sites associated with this user
+            var userSites = await _siteRepo.GetForUserAsync(userId);
+            foreach (var site in userSites)
+            {
+                // Delete all equipment associated with each site
+                var siteEquipment = await _equipmentRepo.GetForUserAsync(site.SiteId);
+                foreach (var equipment in siteEquipment)
+                {
+                    equipment.IsDeleted = true;
+                    equipment.UpdatedBy = actorUserId;
+                    equipment.UpdatedAt = DateTime.UtcNow;
+                    _equipmentRepo.Update(equipment);
+                }
+
+                site.IsDeleted = true;
+                site.UpdatedBy = actorUserId;
+                site.UpdatedAt = DateTime.UtcNow;
+                _siteRepo.Update(site);
+            }
+
+            // Also delete any equipment directly owned by the user (if applicable)
+            var userEquipment = await _equipmentRepo.GetForUserAsync(userId);
+            foreach (var equipment in userEquipment)
+            {
+                equipment.IsDeleted = true;
+                equipment.UpdatedBy = actorUserId;
+                equipment.UpdatedAt = DateTime.UtcNow;
+                _equipmentRepo.Update(equipment);
+            }
+
+            // Mark user as deleted
             u.IsDeleted = true;
             u.UpdatedBy = actorUserId;
             u.UpdatedAt = DateTime.UtcNow;
             _userRepo.Update(u);
 
             await _uow.SaveChangesAsync();
-            return OperationResult.Success("User deleted.");
+            return OperationResult.Success("User and all associated sites and equipment have been deleted.");
         }
 
         public async Task<PagedResult<UserDto>> GetPagedAsync(

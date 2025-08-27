@@ -1,0 +1,191 @@
+﻿<UserControl x:Class="KitchenEquipmentDemo.Enterprise.WPF.Views.SitesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             Background="White">
+
+    <Grid Margin="20" Background="{StaticResource Brush.White}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0 0 0 0">
+            <Border Background="{StaticResource Brush.White}" Height="50">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <TextBlock Text="{Binding ScreenName}"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource Brush.Deep}"
+                                   FontSize="20"
+                                   FontWeight="SemiBold"/>
+                        <Button Content="Add New Site"
+                                Command="{Binding AddCommand}"
+                                Margin="20,0,0,0"
+                                Width="120"
+                                Style="{StaticResource BtnAccent}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Search + Filter Bar -->
+        <!-- Add to your existing filter grid -->
+        <Grid Grid.Row="1" Margin="0 0 0 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Existing Search Text -->
+            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="0,0,15,0">
+                <TextBlock Text="Search Sites" 
+                   Margin="0,0,0,4"
+                   Foreground="{StaticResource Brush.Text}"
+                   FontWeight="SemiBold"/>
+                <TextBox Width="200"
+                 Text="{Binding QueryText, UpdateSourceTrigger=PropertyChanged}"
+                 Tag="Search by code, name, or description...">
+                </TextBox>
+            </StackPanel>
+
+            <!-- Active Status Filter -->
+            <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0,0,15,0">
+                <TextBlock Text="Status" 
+                   Margin="0,0,0,4"
+                   Foreground="{StaticResource Brush.Text}"
+                   FontWeight="SemiBold"/>
+                <ComboBox Width="100"
+                  SelectedItem="{Binding ActiveFilter}">
+                    <ComboBoxItem>All</ComboBoxItem>
+                    <ComboBoxItem Tag="True">Active</ComboBoxItem>
+                    <ComboBoxItem Tag="False">Inactive</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+
+            <!-- Owner Filter -->
+            <StackPanel Grid.Column="2" Orientation="Vertical" Margin="0,0,15,0" Visibility="Collapsed">
+                <TextBlock Text="Owner" 
+                   Margin="0,0,0,4"
+                   Foreground="{StaticResource Brush.Text}"
+                   FontWeight="SemiBold"/>
+                <ComboBox Width="120"
+                  SelectedValue="{Binding OwnerFilter}"
+                  DisplayMemberPath="UserName"
+                  SelectedValuePath="UserId">
+                    <!-- You'll need to populate this with users -->
+                </ComboBox>
+            </StackPanel>
+
+            <!-- PageSize Dropdown -->
+            <StackPanel Grid.Column="3" Orientation="Vertical" Margin="0,0,15,0">
+                <TextBlock Text="Page Size" 
+                   Margin="0,0,0,4"
+                   Foreground="{StaticResource Brush.Text}"
+                   FontWeight="SemiBold"/>
+                <ComboBox Width="80"
+                  ItemsSource="{Binding PageSizeOptions}"
+                  SelectedItem="{Binding PageSize}"/>
+            </StackPanel>
+
+            <!-- OrderBy Dropdown -->
+            <StackPanel Grid.Column="4" Orientation="Vertical" Margin="0,0,15,0">
+                <TextBlock Text="Sort By" 
+                   Margin="0,0,0,4"
+                   Foreground="{StaticResource Brush.Text}"
+                   FontWeight="SemiBold"/>
+                <ComboBox Width="140"
+                  SelectedItem="{Binding SortBy}"
+                  ItemsSource="{Binding SortFields}"/>
+            </StackPanel>
+
+            <!-- Search Button -->
+            <Button Grid.Column="5" 
+            Content="Search"
+            Command="{Binding SearchCommand}"
+            VerticalAlignment="Bottom"
+            Width="120"
+            Style="{StaticResource BtnAccent}"/>
+        </Grid>
+        <!-- Sites GridView -->
+        <Border Grid.Row="2" BorderBrush="{StaticResource Brush.Border}" BorderThickness="1" CornerRadius="4">
+            <ListView ItemsSource="{Binding Sites}" 
+                      SelectedItem="{Binding SelectedSite}"
+                      SelectionMode="Single"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"                      
+                      HorizontalContentAlignment="Stretch">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Actions" Width="Auto">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Edit" 
+                                                Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Margin="0,0,5,0"
+                                                Width="70"
+                                                Style="{StaticResource BtnPrimary}"/>
+                                        <Button Content="Delete" 
+                                                Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Width="70"
+                                                Style="{StaticResource BtnDanger}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Site ID" Width="80" DisplayMemberBinding="{Binding SiteId}"/>
+                        <GridViewColumn Header="Code" Width="120" DisplayMemberBinding="{Binding Code}"/>
+                        <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="Description" Width="250" DisplayMemberBinding="{Binding Description}"/>
+                        <GridViewColumn Header="Active" Width="80" DisplayMemberBinding="{Binding Active}"/>
+                        <GridViewColumn Header="User ID" Width="80" DisplayMemberBinding="{Binding UserId}"/>
+                        <GridViewColumn Header="Created At" Width="150" DisplayMemberBinding="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd hh:mm:ss tt}}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
+
+        <!-- Pagination Controls -->
+        <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <TextBlock FontWeight="Bold"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,2,0" Text="{Binding Total, StringFormat='Total Records: {0}'}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <Button Content="Previous" 
+                        Command="{Binding PreviousPageCommand}"
+                        IsEnabled="{Binding HasPreviousPage}"
+                        Width="100"
+                        Margin="0,0,10,0"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Page " VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding CurrentPage}"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="0,0,2,0"/>
+                    <TextBlock Text=" of " VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding TotalPages}"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="2,0,0,0"/>
+                </StackPanel>
+                <Button Content="Next" 
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding HasNextPage}"
+                        Width="80"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

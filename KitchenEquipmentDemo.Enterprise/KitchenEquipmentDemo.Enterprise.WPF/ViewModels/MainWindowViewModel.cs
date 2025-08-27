@@ -48,8 +48,8 @@ namespace KitchenEquipmentDemo.Enterprise.WPF.ViewModels
             GoDashboardCommand = new RelayCommand(() => { Navigation.Navigate<DashboardViewModel>(); Session.SelectedNavItem = NavItem.Dashboard; });
             GoUsersCommand = new RelayCommand(() => { Navigation.Navigate<UsersViewModel>(); Session.SelectedNavItem = NavItem.Users; });
             GoProfileCommand = new AsyncRelayCommand( () => EditProfileAsync(Session.UserId), () => !IsBusy);
-            GoSitesCommand = new RelayCommand(() => { Navigation.Navigate<DashboardViewModel>(); Session.SelectedNavItem = NavItem.Sites; });
-            GoEquipmentsCommand = new RelayCommand(() => { Navigation.Navigate<DashboardViewModel>(); Session.SelectedNavItem = NavItem.Equipments; });
+            GoSitesCommand = new RelayCommand(() => { Navigation.Navigate<SitesViewModel>(); Session.SelectedNavItem = NavItem.Sites; });
+            GoEquipmentsCommand = new RelayCommand(() => { Navigation.Navigate<EquipmentsViewModel>(); Session.SelectedNavItem = NavItem.Equipments; });
             GoSignUpRequestsCommand = new RelayCommand(() => { Navigation.Navigate<UserRegistrationsViewModel>(); Session.SelectedNavItem = NavItem.SignUpRequests; });
             LogoutCommand = new RelayCommand(Logout);
         }

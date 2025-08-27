@@ -99,8 +99,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ViewModels\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\EquipmentFormViewModel.cs" />
+    <Compile Include="ViewModels\EquipmentsViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\SiteFormViewModel.cs" />
+    <Compile Include="ViewModels\SitesViewModel.cs" />
     <Compile Include="ViewModels\UserFormViewModel.cs" />
     <Compile Include="ViewModels\UserRegistrationsViewModel.cs" />
     <Compile Include="ViewModels\UserRegistrationViewModel.cs" />
@@ -108,8 +112,20 @@
     <Compile Include="Views\DashboardView.xaml.cs">
       <DependentUpon>DashboardView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\EquipmentFormView.xaml.cs">
+      <DependentUpon>EquipmentFormView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EquipmentsView.xaml.cs">
+      <DependentUpon>EquipmentsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SiteFormView.xaml.cs">
+      <DependentUpon>SiteFormView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SitesView.xaml.cs">
+      <DependentUpon>SitesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SitesViews.xaml.cs">
       <DependentUpon>SitesViews.xaml</DependentUpon>
@@ -146,7 +162,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EquipmentFormView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EquipmentsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoginView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SiteFormView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SitesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

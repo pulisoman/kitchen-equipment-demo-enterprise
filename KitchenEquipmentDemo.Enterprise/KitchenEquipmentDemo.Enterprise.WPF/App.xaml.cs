@@ -14,7 +14,8 @@ using KitchenEquipmentDemo.Enterprise.Application.Services;   // AuthService
 // Data layer
 using KitchenEquipmentDemo.Enterprise.Data.Context;          // AppDbContext
 using KitchenEquipmentDemo.Enterprise.Data.Uow;              // UnitOfWork
-using KitchenEquipmentDemo.Enterprise.Data.Repositories;     // UserRepository
+using KitchenEquipmentDemo.Enterprise.Data.Repositories;
+using KitchenEquipmentDemo.Enterprise.Data.Models;     // UserRepository
 
 namespace KitchenEquipmentDemo.Enterprise.WPF
 {
@@ -34,16 +35,21 @@ namespace KitchenEquipmentDemo.Enterprise.WPF
             sc.AddSingleton<INavigationService, NavigationService>();
 
             // ---------- Data layer (minimum needed by AuthService) ----------
-            sc.AddScoped<AppDbContext>();   // uses connection string from App.config
+            sc.AddScoped<AppDbContext>();
+            sc.AddScoped<IUnitOfWork, UnitOfWork>();// uses connection string from App.config
             sc.AddScoped<UnitOfWork>();
             sc.AddScoped<UserRepository>();
             sc.AddScoped<UserRegistrationRequestRepository>();
-
+            sc.AddScoped<SiteRepository>();
+            sc.AddScoped<EquipmentRepository>();
+            sc.AddScoped<SiteEquipmentHistoryRepository>();
             // ---------- Application services ----------
             sc.AddScoped<IAuthService, AuthService>();
             // ✅ Add this to Application services section
             sc.AddScoped<IUserService, UserService>();
             sc.AddScoped<IUserRegistrationService, UserRegistrationService>();
+            sc.AddScoped<ISiteService, SiteService>();
+            sc.AddScoped<IEquipmentService, EquipmentService>();
 
 
             // ---------- ViewModels in use now ----------
@@ -54,7 +60,10 @@ namespace KitchenEquipmentDemo.Enterprise.WPF
             sc.AddTransient<UserFormViewModel>();
             sc.AddTransient<UserRegistrationViewModel>();
             sc.AddTransient<UserRegistrationsViewModel>();
-
+            sc.AddTransient<SitesViewModel>();
+            sc.AddTransient<SiteFormViewModel>();
+            sc.AddTransient<EquipmentsViewModel>();
+            sc.AddTransient<EquipmentFormViewModel>();
             // ---------- Windows ----------
             sc.AddTransient<MainWindow>();
 
